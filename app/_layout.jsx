@@ -8,7 +8,7 @@ export default function Layout() {
     <Stack
       screenOptions={{
         headerRight: () => (
-          <Link href="/signin" asChild>
+          <Link href="/signIn" asChild>
             <Pressable>
               <Text style={{ color: "blue", fontSize: 16, marginRight: 10 }}>
                 Sign In

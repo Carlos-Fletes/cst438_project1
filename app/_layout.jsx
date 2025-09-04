@@ -1,3 +1,4 @@
+
 // app/_layout.jsx
 import { Stack } from "expo-router";
 import { Pressable, Text } from "react-native";
@@ -45,3 +46,4 @@ export default function Layout() {
     </AuthProvider>
   );
 }
+

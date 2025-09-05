@@ -6,6 +6,8 @@ const Home = () => {
         <View>
             <Text>Welcome to the Home Page</Text>
             <Link href="/empty_page">Go to Empty Page(This is link)</Link>
+            
+            <Link href="/Api-pull">Go to API Pull Page(This is link)</Link>
         </View>
     )
 }

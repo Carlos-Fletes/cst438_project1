@@ -1,25 +1,48 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, ActivityIndicator, FlatList, Text, View, Image } from 'react-native';
+import { Link } from 'expo-router';
+import { useEffect, useState } from 'react';
 
-//This is an example of pulling data from an API and displaying it in a React Native component.
-//I am testing how to pull data from the API we are intending to use, most of this has been written by AI while i figure this out
+const Page = async () => {
+    const [isLoading, setLoading] = useState(true);
+    const [todaysComic, comic, setComic] = useState([]);
 
-const ApiPull = async() => {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts/1');
-        const data = await response.json();
-        console.log(data);
-        return (
-            <View style={styles.container}>
-                <Text style={styles.text}>{data.title}</Text>
-            </View>
-        );
-    } catch (error) {
-        console.error(error);
-        return (
-            <View style={styles.container}>
-                <Text style={styles.text}>Error fetching data</Text>
-            </View>
-        );
-    }
-};
+    const getTodaysComic = async () => {
+        return fetch('https://xkcd.com/info.0.json')
+            .then((response) => response.json())
+            .then((json) => {
+                return json.num;
+            });
+    };
+
+    const getComicData = async (comicNum) => {
+        return fetch(`https://xkcd.com/${comicNum}/info.0.json`)
+            .then((response) => response.json())
+            .then((json) => {
+                return json;
+            });
+    };
+
+    useEffect(() => {
+        getTodaysComic()
+            .then((num) => getComicData(num))
+            .then((data) => setComic(data))
+            .catch((error) => console.error(error))
+            .finally(() => setLoading(false));
+    }, []);
+
+
+    return (
+        <View style={styles.container}>
+
+            <Text style={styles.text}>API Data:</Text>
+            <Image
+                source={{ uri: `https://xkcd.com/${(await getComicData()).num}/info.0.json` }}
+                style={styles.image}
+            />
+            <Link href="/empty_page">Go to Empty Page(This is link)</Link>
+        </View>
+    );
+}
+
+export default Page;
+const styles = StyleSheet.create({});

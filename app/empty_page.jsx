@@ -4,7 +4,9 @@ const Page = () => {
     return(
         <View>
             <Text >Empty Page to add to.</Text>
+            <Link href="/account-settings">(account)</Link>
         </View>
+        
     )
 
 }

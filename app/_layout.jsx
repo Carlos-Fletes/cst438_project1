@@ -1,41 +1,38 @@
 // app/_layout.jsx
-import { Stack } from "expo-router";
-import { Pressable, Text } from "react-native";
-import { Link } from "expo-router";
-import { AuthProvider, useAuth } from "../context/AuthContext"; // already fixed path
+import { Stack, Link } from "expo-router";
+import { Pressable, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { AuthProvider, useAuth } from "../context/AuthContext";
 
 function HeaderRight() {
   const { user } = useAuth();
 
-  if (user) {
-    // Username becomes a link to tempSettings
-    return (
-      <Link href="/tempSettings" asChild>
-        <Pressable>
-          <Text
-            style={{
-              marginRight: 10,
-              fontSize: 16,
-              fontWeight: "bold",
-              color: "blue",
-            }}
-          >
-            {user.username}
-          </Text>
+  return (
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
+      {/* Search Icon */}
+      <Link href="/search" asChild>
+        <Pressable style={{ paddingHorizontal: 10 }}>
+          <Ionicons name="search" size={22} />
         </Pressable>
       </Link>
-    );
-  }
 
-  // Default: show Sign In button
-  return (
-    <Link href="/signIn" asChild>
-      <Pressable>
-        <Text style={{ color: "blue", fontSize: 16, marginRight: 10 }}>
-          Sign In
-        </Text>
-      </Pressable>
-    </Link>
+      {/* Username or Sign In */}
+      {user ? (
+        <Link href="/tempSettings" asChild>
+          <Pressable>
+            <Text style={{ marginRight: 10, fontSize: 16, fontWeight: "bold", color: "blue" }}>
+              {user.username}
+            </Text>
+          </Pressable>
+        </Link>
+      ) : (
+        <Link href="/signIn" asChild>
+          <Pressable>
+            <Text style={{ color: "blue", fontSize: 16, marginRight: 10 }}>Sign In</Text>
+          </Pressable>
+        </Link>
+      )}
+    </View>
   );
 }
 
@@ -46,8 +43,10 @@ export default function Layout() {
         <Stack.Screen name="index" options={{ headerRight: () => <HeaderRight /> }} />
         <Stack.Screen name="empty_page" options={{ headerRight: () => <HeaderRight /> }} />
         <Stack.Screen name="signIn" options={{ headerRight: () => null }} />
-        <Stack.Screen name="tempSettings" options={{ title: "Settings" }} />
+        <Stack.Screen name="tempSettings" options={{ title: "Settings", headerRight: () => <HeaderRight /> }} />
+        <Stack.Screen name="search" options={{ title: "Search", headerRight: () => null }} />
       </Stack>
     </AuthProvider>
   );
 }
+

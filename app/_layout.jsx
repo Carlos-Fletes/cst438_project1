@@ -1,4 +1,53 @@
-import {Stack} from "expo-router";
+// app/_layout.jsx
+import { Stack } from "expo-router";
+import { Pressable, Text } from "react-native";
+import { Link } from "expo-router";
+import { AuthProvider, useAuth } from "../context/AuthContext"; // already fixed path
+
+function HeaderRight() {
+  const { user } = useAuth();
+
+  if (user) {
+    // Username becomes a link to tempSettings
+    return (
+      <Link href="/tempSettings" asChild>
+        <Pressable>
+          <Text
+            style={{
+              marginRight: 10,
+              fontSize: 16,
+              fontWeight: "bold",
+              color: "blue",
+            }}
+          >
+            {user.username}
+          </Text>
+        </Pressable>
+      </Link>
+    );
+  }
+
+  // Default: show Sign In button
+  return (
+    <Link href="/signIn" asChild>
+      <Pressable>
+        <Text style={{ color: "blue", fontSize: 16, marginRight: 10 }}>
+          Sign In
+        </Text>
+      </Pressable>
+    </Link>
+  );
+}
+
 export default function Layout() {
-    return <Stack/>;
+  return (
+    <AuthProvider>
+      <Stack>
+        <Stack.Screen name="index" options={{ headerRight: () => <HeaderRight /> }} />
+        <Stack.Screen name="empty_page" options={{ headerRight: () => <HeaderRight /> }} />
+        <Stack.Screen name="signIn" options={{ headerRight: () => null }} />
+        <Stack.Screen name="tempSettings" options={{ title: "Settings" }} />
+      </Stack>
+    </AuthProvider>
+  );
 }

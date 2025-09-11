@@ -37,6 +37,10 @@ export default function IndexPage() {
       <Link href="/empty_page" style={styles.link}>
         Go to Empty Page (This is link)
       </Link>
+
+      <Link href="/Api-pull" style={styles.link}>
+        Go to API Pull Page (This is link)
+      </Link>
     </View>
   );
 }

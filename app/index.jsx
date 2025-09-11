@@ -13,7 +13,7 @@ export default function IndexPage() {
         setDbReady(true);
 
         // Insert user if not exists
-        await insertUser('testuser', 'u001', 'password123');
+        await insertUser('testuser', 'password123');
 
         // Get all users and log them
         const users = await getAllUsers();

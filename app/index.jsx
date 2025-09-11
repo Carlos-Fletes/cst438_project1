@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
 import { initDB, insertUser, getAllUsers } from '../lib/database';
+import {regeneratorRuntime} from 'regenerator-runtime';
 
 export default function IndexPage() {
   const [dbReady, setDbReady] = useState(false);
-
-  useEffect(() => {
-    const setup = async () => {
+  const setup = async () => {
       try {
         await initDB();
         setDbReady(true);
@@ -22,6 +21,9 @@ export default function IndexPage() {
         console.log('❌ Setup error:', err.message);
       }
     };
+    
+  useEffect(() => {
+    
 
     setup();
   }, []);

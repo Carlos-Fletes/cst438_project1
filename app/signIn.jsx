@@ -10,6 +10,7 @@ import {
   Platform,
   Alert,
 } from "react-native";
+import {FindUser, FindPassword, FindUserByUsername} from '../lib/database';
 import { useRouter } from "expo-router";
 import { useAuth } from "../context/AuthContext";
 
@@ -19,23 +20,30 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const { signIn } = useAuth();
   const router = useRouter();
-
-  // Hardcoded credentials (for now)
-  const validUser = "Admin";
-  const validPass = "passwd";
-
   //For now, sign in process
-  const handleSignIn = () => {
-    //If username and password match, sign in
-    if (username === validUser && password === validPass) {
-      signIn(username); // set context
+ const handleSignIn = async () => {
+  try {
+    if (!username || !password) {
+      Alert.alert("Error", "Please enter both username and password.");
+      return;
+    }
+    const storedPassword = await FindPassword(username);
+    const storedUser = await FindUser(username);
+
+    if (storedUser && password === storedPassword) {
+      signIn(username);
       Alert.alert("Success", "Signed in successfully!");
-      router.back(); // go back to previous page (home)
+      global.myVar= FindUserByUsername(username);
+      //console.log(myVar);
+      router.back();
     } else {
-      //If username/password fail, error message
       Alert.alert("Error", "Invalid username or password.");
     }
-  };
+  } catch (error) {
+    console.error("Sign-in error:", error);
+    Alert.alert("Error", "Something went wrong.");
+  }
+};
 
   return (
     <KeyboardAvoidingView

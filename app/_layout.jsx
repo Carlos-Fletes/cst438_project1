@@ -2,6 +2,7 @@
 import { Stack, Link } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+
 import { AuthProvider, useAuth } from "../context/AuthContext";
 
 function HeaderRight() {

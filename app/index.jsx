@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Button, StyleSheet, Image } from "react-native";
-import { Link } from "expo-router";
-import { initDB, insertUser, getAllUsers } from "../lib/database"; // adjust if needed
+import { Link } from "expo-router";  
+import { initDB, insertUser, getAllUsers, FindUserByUsername } from '../lib/database';
+//import {init_DB, insertUserData} from '.../lib/UserComic.js';
 
 export default function IndexPage() {
   const [dbReady, setDbReady] = useState(false);
@@ -10,10 +11,13 @@ export default function IndexPage() {
     const setup = async () => {
       try {
         await initDB();
+      //  await init_DB();
         setDbReady(true);
 
         // Insert user if not exists
-        await insertUser("testuser", "u001", "password123");
+        await insertUser('testuser', 'password123');
+      //  await insertUserData(FindUserByUsername('testuser'),'spiderman');
+      //  console.log('User info: ', getUserDataByUserId(1))
 
         // Get all users and log them
         const users = await getAllUsers();

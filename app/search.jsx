@@ -1,178 +1,156 @@
 // app/search.jsx
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   StyleSheet,
   View,
   Text,
-  TextInput,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  Modal,
+  ScrollView,
   FlatList,
+  Image,
+  Pressable,
+  TextInput,
 } from "react-native";
+import Chip from "../components/Chip";
+import RowCarousel from "../components/RowCarousel";
 
-const GENRES = [
-  { label: "Action", value: "action" },
-  { label: "Adventure", value: "adventure" },
-  { label: "Fantasy", value: "fantasy" },
-  { label: "Horror", value: "horror" },
-  { label: "Sci-Fi", value: "sci-fi" },
-];
+// helpers to make placeholder items
+const makeItems = (count, label) =>
+  Array.from({ length: count }, (_, i) => ({
+    id: `${label}-${i}`,
+    title: `${label} #${i + 1}`,
+    img: `https://via.placeholder.com/120x170.png?text=${encodeURIComponent("Comic")}`,
+  }));
 
-export default function Search() {
+const GENRE_LIST = ["Action", "Adventure", "Fantasy", "Horror", "Sci-Fi", "Mystery", "Comedy", "Drama"];
+const SORTS = ["Trending", "Newest", "Top Rated"];
+
+export default function Browse() {
   const [query, setQuery] = useState("");
-  const [year, setYear] = useState("");
-  const [genre, setGenre] = useState("");
-  const [genreLabel, setGenreLabel] = useState("Select genre…");
-  const [open, setOpen] = useState(false);
+  const [activeGenre, setActiveGenre] = useState("");
+  const [sort, setSort] = useState(SORTS[0]);
 
-  const selectGenre = (g) => {
-    setGenre(g.value);
-    setGenreLabel(g.label);
-    setOpen(false);
-  };
+  const recommended = useMemo(() => makeItems(8, "Recommended"), []);
+  const popular = useMemo(() => makeItems(8, "Popular"), []);
+  const genres = useMemo(
+    () => GENRE_LIST.map((g, i) => ({
+      id: `genre-${i}`,
+      title: g,
+      img: `https://via.placeholder.com/120x170.png?text=${encodeURIComponent(g)}`
+    })),
+    []
+  );
+
+  // Top filter bar: search + genre chips + sort (stub)
+  const FilterBar = () => (
+    <View style={styles.filters}>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search comics…"
+        value={query}
+        onChangeText={setQuery}
+        returnKeyType="search"
+        autoCapitalize="none"
+      />
+      <FlatList
+        horizontal
+        data={GENRE_LIST}
+        keyExtractor={(g) => g}
+        renderItem={({ item }) => (
+          <Chip
+            label={item}
+            selected={activeGenre === item}
+            onPress={() => setActiveGenre(activeGenre === item ? "" : item)}
+          />
+        )}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingRight: 12 }}
+        style={{ marginTop: 10 }}
+      />
+      <View style={styles.sortRow}>
+        <Text style={styles.sortLabel}>Sort:</Text>
+        <FlatList
+          horizontal
+          data={SORTS}
+          keyExtractor={(s) => s}
+          renderItem={({ item }) => (
+            <Pressable
+              onPress={() => setSort(item)}
+              style={[styles.sortPill, sort === item && styles.sortPillActive]}
+            >
+              <Text style={[styles.sortText, sort === item && styles.sortTextActive]}>
+                {item}
+              </Text>
+            </Pressable>
+          )}
+          showsHorizontalScrollIndicator={false}
+        />
+      </View>
+    </View>
+  );
+
+  const renderCard = ({ item }) => (
+    <Pressable style={styles.card}>
+      <Image source={{ uri: item.img }} style={styles.cover} />
+      <Text style={styles.cardTitle} numberOfLines={1}>{item.title}</Text>
+    </Pressable>
+  );
+
+  const Row = ({ title, data }) => (
+    <View style={styles.row}>
+      <View style={styles.rowHeader}>
+        <Text style={styles.rowTitle}>{title}</Text>
+        <Pressable><Text style={styles.seeAll}>See all ›</Text></Pressable>
+      </View>
+      <FlatList
+        data={data}
+        keyExtractor={(it) => it.id}
+        renderItem={renderCard}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingRight: 12 }}
+      />
+    </View>
+  );
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <View style={styles.inner}>
-        {/* Search bar */}
-        <TextInput
-          style={styles.input}
-          placeholder="Search comics…"
-          autoCapitalize="none"
-          returnKeyType="search"
-          value={query}
-          onChangeText={setQuery}
-        />
-
-        {/* Custom dropdown */}
-        <Pressable
-          style={[styles.select, !genre && styles.selectPlaceholder]}
-          onPress={() => setOpen(true)}
-        >
-          <Text style={styles.selectText}>{genreLabel}</Text>
-          <Text style={styles.caret}>▾</Text>
-        </Pressable>
-
-        <Modal
-          transparent
-          visible={open}
-          animationType="fade"
-          onRequestClose={() => setOpen(false)}
-        >
-          <Pressable style={styles.backdrop} onPress={() => setOpen(false)}>
-            <View style={styles.sheet}>
-              <Text style={styles.sheetTitle}>Choose a genre</Text>
-              <FlatList
-                data={GENRES}
-                keyExtractor={(item) => item.value}
-                renderItem={({ item }) => (
-                  <Pressable
-                    style={styles.option}
-                    onPress={() => selectGenre(item)}
-                  >
-                    <Text style={styles.optionText}>{item.label}</Text>
-                  </Pressable>
-                )}
-                ItemSeparatorComponent={() => <View style={styles.separator} />}
-              />
-            </View>
-          </Pressable>
-        </Modal>
-
-        {/* Year input */}
-        <TextInput
-          style={styles.input}
-          placeholder="Year (e.g., 1998)"
-          keyboardType="numeric"
-          value={year}
-          onChangeText={(t) => setYear(t.replace(/[^0-9]/g, "").slice(0, 4))}
-          maxLength={4}
-        />
-
-        {/* Search button (UI only, no function yet) */}
-        <Pressable style={styles.searchButton}>
-          <Text style={styles.searchText}>Search</Text>
-        </Pressable>
-      </View>
-    </KeyboardAvoidingView>
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 24 }}>
+      <FilterBar />
+      <RowCarousel title="Recommended" items={recommended} />
+      <RowCarousel title="Popular" items={popular} />
+      <RowCarousel title="Genres" items={genres} />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
-  inner: { paddingTop: 16, paddingHorizontal: 16 },
 
-  input: {
-    height: 48,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    fontSize: 16,
-    marginBottom: 16,
-    backgroundColor: "#fff",
+  // filters
+  filters: { paddingHorizontal: 12, paddingTop: 12, paddingBottom: 4 },
+  searchInput: {
+    height: 44, borderWidth: 1, borderColor: "#ccc", borderRadius: 10,
+    paddingHorizontal: 12, fontSize: 16, backgroundColor: "#fff",
   },
+  sortRow: { flexDirection: "row", alignItems: "center", marginTop: 10 },
+  sortLabel: { marginRight: 8, fontWeight: "600" },
+  sortPill: {
+    paddingHorizontal: 10, paddingVertical: 6, borderWidth: 1, borderColor: "#ccc",
+    borderRadius: 12, marginRight: 8, backgroundColor: "#fff",
+  },
+  sortPillActive: { borderColor: "#007BFF", backgroundColor: "#E8F1FF" },
+  sortText: { fontSize: 14 },
+  sortTextActive: { color: "#007BFF", fontWeight: "600" },
 
-  // Dropdown trigger
-  select: {
-    height: 48,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    backgroundColor: "#fff",
-    marginBottom: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+  // (Kept for internal rows if you ever use local Row)
+  row: { marginTop: 8, paddingHorizontal: 12 },
+  rowHeader: {
+    paddingHorizontal: 4, marginBottom: 6,
+    flexDirection: "row", alignItems: "baseline", justifyContent: "space-between",
   },
-  selectPlaceholder: { borderColor: "#ccc" },
-  selectText: { fontSize: 16 },
-  caret: { fontSize: 16, opacity: 0.7 },
+  rowTitle: { fontSize: 22, fontWeight: "700" },
+  seeAll: { color: "#007BFF", fontSize: 14 },
 
-  // Modal dropdown
-  backdrop: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.25)",
-    justifyContent: "center",
-    padding: 24,
-  },
-  sheet: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    paddingVertical: 12,
-    shadowColor: "#000",
-    shadowOpacity: 0.15,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 4,
-  },
-  sheetTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    paddingHorizontal: 16,
-    paddingBottom: 8,
-  },
-  option: { paddingVertical: 12, paddingHorizontal: 16 },
-  optionText: { fontSize: 16 },
-  separator: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: "#eee",
-    marginLeft: 16,
-  },
-
-  // Search button
-  searchButton: {
-    marginTop: 12,
-    padding: 12,
-    backgroundColor: "#007BFF",
-    borderRadius: 6,
-    alignItems: "center",
-  },
-  searchText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
+  card: { width: 120, marginRight: 12 },
+  cover: { width: 120, height: 170, borderRadius: 8, backgroundColor: "#eee" },
+  cardTitle: { marginTop: 6, fontSize: 12, width: 120 },
 });

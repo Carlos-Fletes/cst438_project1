@@ -33,8 +33,8 @@ export default function SignIn() {
     if (storedUser && password === storedPassword) {
       signIn(username);
       Alert.alert("Success", "Signed in successfully!");
-      global.myVar= FindUserByUsername(username);
-      //console.log(myVar);
+      global.myVar= await FindUserByUsername(username);
+      console.log(global.myVar.id);
       router.back();
     } else {
       Alert.alert("Error", "Invalid username or password.");

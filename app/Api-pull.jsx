@@ -1,11 +1,10 @@
 import { StyleSheet, ActivityIndicator, FlatList, View, Image, Text, Button} from 'react-native';
 import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
-import * as SQLite from 'expo-sqlite';
 import { insertUserData } from '../lib/UserComic';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { getTodaysComic, getRandomComic } from '../lib/generalApi';
 
-const db = SQLite.openDatabase('mydatabase.db');
+
 
 var recentComicNum = 0;
 
@@ -14,33 +13,35 @@ const Page = () => {
     const [data, setData] = useState([]);
     
 
-    const getTodaysComic = async () => {
-        try {
-            const response = await fetch('https://xkcd.com/info.0.json');
-            const json = await response.json();
-            setData([json]);
-            recentComicNum = json.num;
-            console.log(json);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    // const getTodaysComic = async () => {
+    //     try {
+    //         const response = await fetch('https://xkcd.com/info.0.json');
+    //         const json = await response.json();
+    //         setData([json]);
+    //         recentComicNum = json.num;
+    //         console.log(json);
+    //     } catch (error) {
+    //         console.error(error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
-    const getRandomComic = async () => {
-        try {
-            var randomNum = Math.floor(Math.random() * recentComicNum) + 1;
-            const response = await fetch(`https://xkcd.com/${randomNum}/info.0.json`);
-            const json = await response.json();
-            setData([json]);
-            console.log(json);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    // const getRandomComic = async () => {
+    //     try {
+    //         var randomNum = Math.floor(Math.random() * recentComicNum) + 1;
+    //         const response = await fetch(`https://xkcd.com/${randomNum}/info.0.json`);
+    //         const json = await response.json();
+    //         setData([json]);
+    //         console.log(json);
+    //     } catch (error) {
+    //         console.error(error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
+
 
 
 
@@ -50,19 +51,25 @@ const Page = () => {
     };
 
     const getUserFavorites = async (userId) => {
-        getUserDataByUserId(userId).then(favorites => {
-            console.log(`User ID ${userId} favorites:`, favorites);
-            return favorites;
-        }).catch(error => {
-            console.error('Error fetching user favorites:', error);
-        });
+        const favorites = await getUserDataByUserId(userId);
+        console.log(`Favorites for user ID ${userId}:`, favorites);
     };
 
-    
-
     useEffect(() => {
-        getTodaysComic();
+        const fetchData = async () => {
+            const comic = await getTodaysComic();
+            setData([comic]);
+            setLoading(false);
+        };
+        fetchData();
     }, []);
+
+    const fetchRandomComic = async () => {
+        setLoading(true);
+        const comic = await getRandomComic();
+        setData([comic]);
+        setLoading(false);
+    };
 
     return (
         <View style={styles.container}>
@@ -75,7 +82,7 @@ const Page = () => {
                             <Text>{item.title}</Text>
                             <Image source={{ uri: item.img }} style={styles.image} />
                             <Button title="Favorite" onPress={() => addUserFavorite(item.num)} />
-                            <Button title="Get Random Comic" onPress={() => getRandomComic()} />
+                            <Button title="Get Random Comic" onPress={() => fetchRandomComic()} />
                             <Text></Text>
                         </View>
                     )}

@@ -1,6 +1,6 @@
 import { StyleSheet, ActivityIndicator, FlatList, View, Image, Text, Button} from 'react-native';
 import { Link } from 'expo-router';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { insertUserData } from '../lib/UserComic';
 import { getTodaysComic, getRandomComic } from '../lib/generalApi';
 
@@ -93,7 +93,7 @@ const Page = () => {
     );
 }
 
-export default Page;
+
 
 
 const styles = StyleSheet.create({
@@ -114,3 +114,5 @@ const styles = StyleSheet.create({
         color: 'blue',
     },
 });
+
+export default Page;

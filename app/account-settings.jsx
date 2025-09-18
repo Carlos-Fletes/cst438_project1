@@ -13,7 +13,7 @@ const Account = () => {
 
     return (
         <View  style={styles.container}>
-            <Text>Account Page</Text>
+            <Text>Settings</Text>
 
 
             <Text>Current username: Username</Text>
@@ -22,10 +22,13 @@ const Account = () => {
 
             <View style={styles.inner}>
                     <Pressable style={styles.button} onPress={change_Username}>
-                      <Text style={styles.buttonText}>Change Username</Text>
+                      <Text style={styles.buttonText}>Account</Text>
                     </Pressable>
                     <Pressable style={styles.button} onPress={change_Password}>
-                      <Text style={styles.buttonText}>Change Password</Text>
+                      <Text style={styles.buttonText}>Notifications</Text>
+                    </Pressable>
+                    <Pressable style={styles.button} onPress={change_Password}>
+                      <Text style={styles.buttonText}>About</Text>
                     </Pressable>
             </View>
 

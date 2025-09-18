@@ -17,6 +17,7 @@ export default function IndexPage() {
 
         // Insert user if not exists
         await insertUser('testuser', 'password123');
+        await insertUser('keith', 'ruxton');
       //  await insertUserData(FindUserByUsername('testuser'),'spiderman');
       //  console.log('User info: ', getUserDataByUserId(1))
 

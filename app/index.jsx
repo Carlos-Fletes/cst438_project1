@@ -1,73 +1,87 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Button, StyleSheet, Image } from "react-native";
+// app/index.jsx
+import React, { useMemo } from "react";
+import { ScrollView, StyleSheet, View, Image, Text, Pressable } from "react-native";
 import { Link } from "expo-router";
-import { initDB, insertUser, getAllUsers } from "../lib/database"; // adjust if needed
+import RowCarousel from "../components/RowCarousel";
+import { useAuth } from "../context/AuthContext";
 
-export default function IndexPage() {
-  const [dbReady, setDbReady] = useState(false);
+// simple placeholder data
+const make = (n, label) =>
+  Array.from({ length: n }, (_, i) => ({
+    id: `${label}-${i}`,
+    title: `${label} #${i + 1}`,
+    img: "https://via.placeholder.com/120x170.png?text=Comic",
+  }));
 
-  useEffect(() => {
-    const setup = async () => {
-      try {
-        await initDB();
-        setDbReady(true);
+export default function Home() {
+  const { user } = useAuth();
 
-        // Insert user if not exists
-        await insertUser("testuser", "u001", "password123");
-
-        // Get all users and log them
-        const users = await getAllUsers();
-        console.log("📦 Users in DB:", users);
-      } catch (err) {
-        console.log("❌ Setup error:", err.message);
-      }
-    };
-
-    setup();
-  }, []);
+  const recommended = useMemo(() => make(8, "Recommended"), []);
+  const popular = useMemo(() => make(8, "Popular"), []);
+  const favorites = useMemo(() => make(6, "Favorite"), []);
 
   return (
-    <View style={styles.container}>
-      {/* Local banner image */}
-      <Image
-        source={require("../assets/ComicOfTheDay.png")}
-        style={styles.banner}
-        resizeMode="cover"
-      />
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 24 }}>
+      {/* Banner */}
+      <View style={styles.bannerWrap}>
+        <Image
+          source={require("../assets/ComicOfTheDay.png")}
+          style={styles.banner}
+          resizeMode="cover"
+        />
+      </View>
 
-      <Text style={styles.text}>
-        {dbReady ? "SQLite is ready!" : "Initializing..."}
-      </Text>
+      {/* Rows (match Browse vibe) */}
+      <RowCarousel title="Recommended" items={recommended} />
+      <RowCarousel title="Popular" items={popular} />
 
-      <Button title="Do Nothing" onPress={() => {}} />
+      {/* Favorites: show real row when signed in; otherwise a slim CTA */}
+      {user ? (
+        <RowCarousel title="Favorites" items={favorites} />
+      ) : (
+        <View style={styles.cta}>
+          <Text style={styles.ctaTitle}>Favorites</Text>
+          <View style={styles.ctaCard}>
+            <Text style={styles.ctaText}>Sign in to see your favorites here.</Text>
+            <Link href="/signIn" asChild>
+              <Pressable style={styles.ctaButton}>
+                <Text style={styles.ctaButtonText}>Sign In</Text>
+              </Pressable>
+            </Link>
+          </View>
+        </View>
+      )}
 
-      <Link href="/empty_page" style={styles.link}>
-        Go to Empty Page (This is link)
-      </Link>
-    </View>
+      {/* If you want “Continue Reading” later, add it under Favorites once user is signed in */}
+      {/* {user && <RowCarousel title="Continue Reading" items={make(6, "Continue")} />} */}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 24,
-    justifyContent: "flex-start", // content flows below the banner
+  container: { flex: 1, backgroundColor: "#fff" },
+  bannerWrap: { paddingHorizontal: 12, paddingTop: 12 },
+  banner: { width: "100%", height: 200, borderRadius: 12, marginBottom: 12 },
+
+  // Favorites CTA (when logged out)
+  cta: { marginTop: 8, paddingHorizontal: 12 },
+  ctaTitle: { fontSize: 22, fontWeight: "700", marginBottom: 6, paddingHorizontal: 4 },
+  ctaCard: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 10,
+    padding: 12,
+    backgroundColor: "#fafafa",
+    flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
+    justifyContent: "space-between",
   },
-  banner: {
-    width: "100%",   // full screen width
-    height: 200,     // adjust for your desired banner size
-    marginBottom: 20,
-    borderRadius: 12, // optional rounded corners
+  ctaText: { fontSize: 14, flex: 1, marginRight: 12 },
+  ctaButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: "#007BFF",
+    borderRadius: 8,
   },
-  text: {
-    fontSize: 20,
-    marginBottom: 20,
-  },
-  link: {
-    marginTop: 20,
-    color: "blue",
-  },
+  ctaButtonText: { color: "#fff", fontWeight: "600" },
 });

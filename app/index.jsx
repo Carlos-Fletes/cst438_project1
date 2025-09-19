@@ -2,28 +2,54 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
 import { initDB, insertUser, getAllUsers, FindUserByUsername } from '../lib/database';
-//import {init_DB, insertUserData} from '.../lib/UserComic.js';
-
+import { init_DB, insertUserData, getUserDataByUserId, getUserDataWithoutTimestamp, removeDuplicateUserData } from '../lib/UserComic.js';
 
 export default function IndexPage() {
   const [dbReady, setDbReady] = useState(false);
+  const [dbRead, setDbRead] = useState(false);
 
   useEffect(() => {
     const setup = async () => {
       try {
+        // Initialize databases
         await initDB();
-      //  await init_DB();
+        await init_DB();
         setDbReady(true);
+        setDbRead(true);
 
-        // Insert user if not exists
+        // Insert users
         await insertUser('testuser', 'password123');
-        await insertUser('Admin','AdminPass')
-      //  await insertUserData(FindUserByUsername('testuser'),'spiderman');
-      //  console.log('User info: ', getUserDataByUserId(1))
+        await insertUser('Admin', 'AdminPass');
 
-        // Get all users and log them
+        // Get Admin user and add info 42
+        const adminUser = await FindUserByUsername('Admin');
+        if (adminUser) {
+          await insertUserData(adminUser.id, 42);
+        }
+        const testUser = await FindUserByUsername('testuser');
+if (testUser) {
+  await insertUserData(testUser.id, 28);
+}
+
+        // 👉 Log all users with username & password
         const users = await getAllUsers();
-        console.log('📦 Users in DB:', users);
+        console.log('📋 All Users:');
+        users.forEach(user => {
+          console.log(`👤 Username: ${user.username}, Password: ${user.password}`);
+        });
+        await removeDuplicateUserData();
+        console.log('Admin user ID:', adminUser.id);
+console.log('Test user ID:', testUser.id);
+
+
+
+        // 👉 Log user_data (excluding created_at)
+        const userData = await getUserDataWithoutTimestamp();
+        console.log('📊 All user_data (no created_at):', userData);
+        const user1Data = await getUserDataByUserId(1);
+        const user2Data= await getUserDataByUserId(2);
+console.log('🔍 Info for user_id 1:', user1Data.map(row => row.info));
+console.log('🔍 Info for user_id 2:', user2Data.map(row => row.info));
       } catch (err) {
         console.log('❌ Setup error:', err.message);
       }

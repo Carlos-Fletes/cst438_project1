@@ -10,47 +10,45 @@ import {
   Platform,
   Alert,
 } from "react-native";
-import {FindUser, FindPassword, FindUserByUsername} from '../lib/database';
+import { FindUserByUsername } from '../lib/database';
 import { useRouter } from "expo-router";
 import { useAuth } from "../context/AuthContext";
 
 export default function SignIn() {
-  //Set default sign in settings on start-up
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { signIn } = useAuth();
   const router = useRouter();
-  //For now, sign in process
- const handleSignIn = async () => {
-  try {
-    if (!username || !password) {
-      Alert.alert("Error", "Please enter both username and password.");
-      return;
-    }
-    const storedPassword = await FindPassword(username);
-    const storedUser = await FindUser(username);
 
-    if (storedUser && password === storedPassword) {
-      signIn(username);
-      Alert.alert("Success", "Signed in successfully!");
-      global.myVar= await FindUserByUsername(username);
-      console.log(global.myVar.id);
-      router.back();
-    } else {
-      Alert.alert("Error", "Invalid username or password.");
+  const handleSignIn = async () => {
+    try {
+      if (!username.trim() || !password) {
+        Alert.alert("Error", "Please enter both username and password.");
+        return;
+      }
+
+      const user = await FindUserByUsername(username.trim());
+
+      if (user && user.password === password) {
+        signIn(user.username);
+        Alert.alert("Success", "Signed in successfully!");
+        global.myVar = user;
+        console.log("Logged in user ID:", user.id);
+        router.back();
+      } else {
+        Alert.alert("Error", "Invalid username or password.");
+      }
+    } catch (error) {
+      console.error("Sign-in error:", error);
+      Alert.alert("Error", "Something went wrong.");
     }
-  } catch (error) {
-    console.error("Sign-in error:", error);
-    Alert.alert("Error", "Something went wrong.");
-  }
-};
+  };
 
   return (
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      {/*Show username and password when nothing is entered*/}
       <View style={styles.inner}>
         <TextInput
           style={styles.input}
@@ -74,7 +72,6 @@ export default function SignIn() {
   );
 }
 
-//Styles
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
   inner: {

@@ -1,39 +1,79 @@
-import {StyleSheet, Text, View, Pressable} from 'react-native';
-import {Link, useRouter} from 'expo-router';
+import {StyleSheet, Text, View, Pressable, TextInput} from 'react-native';
+import {useRouter} from 'expo-router';
+import React, {useState} from 'react';
 
 const Account = () => {
     const router = useRouter();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [newUsername, setNewUsername] = useState('');
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [repeatNewPassword, setRepeatNewPassword] = useState('');
 
+    const go_back = () => {
+        router.push('/settings');
+    };
     const change_Password = () => {
         router.push('/changePassword');
     };
     const change_Username = () => {
-        router.push('/changeUsername');
+        // Add username change logic here
+        // For now, just go back
+        router.push('/account-settings');
     };
 
     return (
-        <View  style={styles.container}>
-            <Text>Settings</Text>
-
-
-            <Text>Current username: Username</Text>
-
-
-
+        <View style={styles.container}>
+            <Text>Account Page</Text>
+            <Text>Current username: {username}</Text>
             <View style={styles.inner}>
-                    <Pressable style={styles.button} onPress={change_Username}>
-                      <Text style={styles.buttonText}>Account</Text>
-                    </Pressable>
-                    <Pressable style={styles.button} onPress={change_Password}>
-                      <Text style={styles.buttonText}>Notifications</Text>
-                    </Pressable>
-                    <Pressable style={styles.button} onPress={change_Password}>
-                      <Text style={styles.buttonText}>About</Text>
-                    </Pressable>
+                
+                <TextInput
+                    style={styles.input}
+                    placeholder="New Username"
+                    value={newUsername}
+                    onChangeText={setNewUsername}
+                />
+                <Pressable style={styles.button} onPress={change_Username}>
+                  <Text style={styles.buttonText}>Change Username</Text>
+                </Pressable>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <div>Item A</div>
+                  <div>Item B</div>
+                  <div>Item C</div>
+                </div>
+
+
+
+                <TextInput
+                    style={styles.input}
+                    placeholder="Old Password"
+                    secureTextEntry={true}
+                    value={oldPassword}
+                    onChangeText={setOldPassword}
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="New Password"
+                    secureTextEntry={true}
+                    value={newPassword}
+                    onChangeText={setNewPassword}
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Repeat New Password"
+                    secureTextEntry={true}
+                    value={repeatNewPassword}
+                    onChangeText={setRepeatNewPassword}
+                />
+                <Pressable style={styles.button} onPress={change_Password}>
+                  <Text style={styles.buttonText}>Change Password</Text>
+                </Pressable>
+                <Pressable style={styles.button} onPress={go_back}>
+                  <Text style={styles.buttonText}>Go Back</Text>
+                </Pressable>
             </View>
-
-
-
         </View>
     )
 }

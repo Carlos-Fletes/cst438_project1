@@ -21,11 +21,7 @@ export default function Home() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 24 }}>
       <View style={styles.bannerWrap}>
-        <Image
-          source={require("../assets/ComicOfTheDay.png")}
-          style={styles.banner}
-          resizeMode="cover"
-        />
+        <Image source={require("../assets/ComicOfTheDay.png")} style={styles.banner} resizeMode="cover" />
       </View>
 
       <RowCarousel title="Recommended" items={recommended} />

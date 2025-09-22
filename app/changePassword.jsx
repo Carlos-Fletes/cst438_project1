@@ -17,7 +17,7 @@ const Account = () => {
     };
     const change_Password = () => {
         // Add password change logic here
-        // For now, just go back
+        /* For now, just go back */
         router.push('/account-settings');
     };
 

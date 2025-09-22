@@ -5,7 +5,6 @@ import { Link } from "expo-router";
 import RowCarousel from "../components/RowCarousel";
 import { useAuth } from "../context/AuthContext";
 
-// simple placeholder data
 const make = (n, label) =>
   Array.from({ length: n }, (_, i) => ({
     id: `${label}-${i}`,
@@ -15,27 +14,19 @@ const make = (n, label) =>
 
 export default function Home() {
   const { user } = useAuth();
-
   const recommended = useMemo(() => make(8, "Recommended"), []);
   const popular = useMemo(() => make(8, "Popular"), []);
   const favorites = useMemo(() => make(6, "Favorite"), []);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 24 }}>
-      {/* Banner */}
       <View style={styles.bannerWrap}>
-        <Image
-          source={require("../assets/ComicOfTheDay.png")}
-          style={styles.banner}
-          resizeMode="cover"
-        />
+        <Image source={require("../assets/ComicOfTheDay.png")} style={styles.banner} resizeMode="cover" />
       </View>
 
-      {/* Rows (match Browse vibe) */}
       <RowCarousel title="Recommended" items={recommended} />
       <RowCarousel title="Popular" items={popular} />
 
-      {/* Favorites: show real row when signed in; otherwise a slim CTA */}
       {user ? (
         <RowCarousel title="Favorites" items={favorites} />
       ) : (
@@ -51,9 +42,6 @@ export default function Home() {
           </View>
         </View>
       )}
-
-      {/* If you want “Continue Reading” later, add it under Favorites once user is signed in */}
-      {/* {user && <RowCarousel title="Continue Reading" items={make(6, "Continue")} />} */}
     </ScrollView>
   );
 }
@@ -62,26 +50,13 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
   bannerWrap: { paddingHorizontal: 12, paddingTop: 12 },
   banner: { width: "100%", height: 200, borderRadius: 12, marginBottom: 12 },
-
-  // Favorites CTA (when logged out)
   cta: { marginTop: 8, paddingHorizontal: 12 },
   ctaTitle: { fontSize: 22, fontWeight: "700", marginBottom: 6, paddingHorizontal: 4 },
   ctaCard: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 10,
-    padding: 12,
-    backgroundColor: "#fafafa",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    borderWidth: 1, borderColor: "#ddd", borderRadius: 10, padding: 12,
+    backgroundColor: "#fafafa", flexDirection: "row", alignItems: "center", justifyContent: "space-between",
   },
   ctaText: { fontSize: 14, flex: 1, marginRight: 12 },
-  ctaButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    backgroundColor: "#007BFF",
-    borderRadius: 8,
-  },
+  ctaButton: { paddingHorizontal: 12, paddingVertical: 8, backgroundColor: "#007BFF", borderRadius: 8 },
   ctaButtonText: { color: "#fff", fontWeight: "600" },
 });

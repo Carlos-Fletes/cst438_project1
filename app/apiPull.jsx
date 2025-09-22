@@ -95,7 +95,6 @@ const Page = () => {
 
 
 
-
 const styles = StyleSheet.create({
     FlatList:{ flex: 1, width: '100%' },
     image: { width: 350, height: 300, marginBottom: 20 ,resizeMode:'contain',},

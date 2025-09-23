@@ -7,7 +7,7 @@ import { init_DB, insertUserData, getUserDataByUserId, getUserDataWithoutTimesta
 export default function IndexPage() {
   const [dbReady, setDbReady] = useState(false);
   const [dbRead, setDbRead] = useState(false);
-
+ //check
   useEffect(() => {
     const setup = async () => {
       try {

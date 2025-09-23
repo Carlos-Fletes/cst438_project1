@@ -40,11 +40,11 @@ export default function Layout() {
   return (
     <AuthProvider>
       <Stack>
-        <Stack.Screen name="index" options={{ headerRight: () => <HeaderRight /> }} />
+        <Stack.Screen name="index" options={{ title: "Home", headerRight: () => <HeaderRight /> }} />
         <Stack.Screen name="empty_page" options={{ headerRight: () => <HeaderRight /> }} />
         <Stack.Screen name="signIn" options={{ headerRight: () => null }} />
         <Stack.Screen name="tempSettings" options={{ title: "Settings", headerRight: () => <HeaderRight /> }} />
-        <Stack.Screen name="search" options={{ title: "Search", headerRight: () => null }} />
+        <Stack.Screen name="search" options={{ title: "Browse", headerRight: () => null }} />
       </Stack>
     </AuthProvider>
   );

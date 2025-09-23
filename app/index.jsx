@@ -1,19 +1,91 @@
-// app/index.jsx
-import React, { useMemo } from "react";
-import { ScrollView, StyleSheet, View, Image, Text, Pressable } from "react-native";
+import React, { useEffect, useState, useMemo } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  Pressable,
+} from "react-native";
 import { Link } from "expo-router";
 import RowCarousel from "../components/RowCarousel";
 import { useAuth } from "../context/AuthContext";
 
-const make = (n, label) =>
-  Array.from({ length: n }, (_, i) => ({
-    id: `${label}-${i}`,
-    title: `${label} #${i + 1}`,
-    img: "https://via.placeholder.com/120x170.png?text=Comic",
-  }));
+// DB + User Data Imports
+import {
+  initDB,
+  insertUser,
+  getAllUsers,
+  FindUserByUsername,
+} from "../lib/database";
+import {
+  init_DB,
+  insertUserData,
+  getUserDataByUserId,
+  getUserDataWithoutTimestamp,
+  removeDuplicateUserData,
+} from "../lib/UserComic";
 
 export default function Home() {
   const { user } = useAuth();
+  const [dbReady, setDbReady] = useState(false);
+
+  useEffect(() => {
+    const setup = async () => {
+      try {
+        // Initialize both databases
+        await initDB();
+        await init_DB();
+        setDbReady(true);
+
+        // Seed test users
+        await insertUser("testuser", "password123");
+        await insertUser("Admin", "AdminPass");
+
+        // Insert user data
+        const adminUser = await FindUserByUsername("Admin");
+        if (adminUser) {
+          await insertUserData(adminUser.id, 42);
+        }
+
+        const testUser = await FindUserByUsername("testuser");
+        if (testUser) {
+          await insertUserData(testUser.id, 28);
+        }
+
+        // Log all users
+        const users = await getAllUsers();
+        console.log("📋 All Users:");
+        users.forEach((u) =>
+          console.log(`👤 Username: ${u.username}, Password: ${u.password}`)
+        );
+
+        await removeDuplicateUserData();
+
+        // Log user_data (excluding timestamp)
+        const allUserData = await getUserDataWithoutTimestamp();
+        console.log("📊 All user_data (no created_at):", allUserData);
+
+        const user1Data = await getUserDataByUserId(1);
+        const user2Data = await getUserDataByUserId(2);
+        console.log("🔍 Info for user_id 1:", user1Data.map((r) => r.info));
+        console.log("🔍 Info for user_id 2:", user2Data.map((r) => r.info));
+      } catch (err) {
+        console.log("❌ Setup error:", err.message);
+      }
+    };
+
+    setup();
+  }, []);
+
+  // Carousel data
+  const make = (n, label) =>
+    Array.from({ length: n }, (_, i) => ({
+      id: `${label}-${i}`,
+      title: `${label} #${i + 1}`,
+      img: "https://via.placeholder.com/120x170.png?text=Comic",
+    }));
+
   const recommended = useMemo(() => make(8, "Recommended"), []);
   const popular = useMemo(() => make(8, "Popular"), []);
   const favorites = useMemo(() => make(6, "Favorite"), []);

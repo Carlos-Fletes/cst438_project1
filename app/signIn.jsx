@@ -1,12 +1,17 @@
-// app/signIn.jsx
 import { useState } from "react";
 import {
-  StyleSheet, Text, View, TextInput, Pressable,
-  KeyboardAvoidingView, Platform, Alert,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Pressable,
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "../context/AuthContext";
-import { FindUser, FindPassword, FindUserByUsername } from "../lib/database";
+import { FindPassword, FindUserByUsername } from "../lib/database";
 
 export default function SignIn() {
   const [username, setUsername] = useState("");
@@ -16,17 +21,18 @@ export default function SignIn() {
 
   const handleSignIn = async () => {
     try {
-      if (!username || !password) {
+      if (!username.trim() || !password) {
         Alert.alert("Error", "Please enter both username and password.");
         return;
       }
-      const storedPassword = await FindPassword(username);
-      const storedUser = await FindUser(username);
 
-      if (storedUser && password === storedPassword) {
-        signIn(username);
+      const user = await FindUserByUsername(username.trim());
+
+      if (user && user.password === password) {
+        signIn(user.username);
         Alert.alert("Success", "Signed in successfully!");
-        global.myVar = await FindUserByUsername(username);
+        global.myVar = user; // Storing user globally (consider context or state instead)
+        console.log("Logged in user ID:", user.id);
         router.back();
       } else {
         Alert.alert("Error", "Invalid username or password.");
@@ -38,7 +44,10 @@ export default function SignIn() {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <View style={styles.inner}>
         <TextInput
           style={styles.input}
@@ -46,6 +55,7 @@ export default function SignIn() {
           value={username}
           onChangeText={setUsername}
           autoCapitalize="none"
+          autoCorrect={false}
         />
         <TextInput
           style={styles.input}
@@ -65,16 +75,30 @@ export default function SignIn() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
   inner: {
-    flex: 1, justifyContent: "flex-start", alignItems: "center",
-    paddingTop: 100, paddingHorizontal: 20,
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    paddingTop: 100,
+    paddingHorizontal: 20,
   },
   input: {
-    width: "80%", height: 50, borderWidth: 1, borderColor: "#ccc",
-    borderRadius: 8, paddingHorizontal: 10, marginBottom: 15, fontSize: 16,
+    width: "80%",
+    height: 50,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+    fontSize: 16,
   },
   button: {
-    width: "80%", height: 50, backgroundColor: "#007BFF",
-    borderRadius: 8, justifyContent: "center", alignItems: "center", marginTop: 10,
+    width: "80%",
+    height: 50,
+    backgroundColor: "#007BFF",
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
   },
   buttonText: { color: "#fff", fontSize: 18, fontWeight: "bold" },
 });

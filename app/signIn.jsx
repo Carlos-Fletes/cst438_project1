@@ -1,4 +1,3 @@
-// app/signin.jsx
 import { useState } from "react";
 import {
   StyleSheet,
@@ -10,9 +9,9 @@ import {
   Platform,
   Alert,
 } from "react-native";
-import { FindUserByUsername } from '../lib/database';
 import { useRouter } from "expo-router";
 import { useAuth } from "../context/AuthContext";
+import { FindPassword, FindUserByUsername } from "../lib/database";
 
 export default function SignIn() {
   const [username, setUsername] = useState("");
@@ -32,7 +31,7 @@ export default function SignIn() {
       if (user && user.password === password) {
         signIn(user.username);
         Alert.alert("Success", "Signed in successfully!");
-        global.myVar = user;
+        global.myVar = user; // Storing user globally (consider context or state instead)
         console.log("Logged in user ID:", user.id);
         router.back();
       } else {
@@ -56,11 +55,12 @@ export default function SignIn() {
           value={username}
           onChangeText={setUsername}
           autoCapitalize="none"
+          autoCorrect={false}
         />
         <TextInput
           style={styles.input}
           placeholder="Password"
-          secureTextEntry={true}
+          secureTextEntry
           value={password}
           onChangeText={setPassword}
         />

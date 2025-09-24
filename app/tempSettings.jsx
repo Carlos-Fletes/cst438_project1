@@ -4,7 +4,7 @@ const Page = () => {
     const router = useRouter();
 
     const go_to_account = () => {
-        router.push('/account-settings');
+        router.push('/settings');
     };
 
     return(

@@ -19,7 +19,7 @@ function HeaderRight() {
 
       {/* Username or Sign In */}
       {user ? (
-        <Link href="/tempSettings" asChild>
+        <Link href="/settings" asChild>
           <Pressable>
             <Text style={{ marginRight: 10, fontSize: 16, fontWeight: "bold", color: "blue" }}>
               {user.username}

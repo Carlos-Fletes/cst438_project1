@@ -40,6 +40,7 @@ export default function Home() {
 
         // Insert user if not exists
         await insertUser('testuser', 'password123');
+        await insertUser('keith', 'test');
         await insertUser('Admin','AdminPass')
       //  await insertUserData(FindUserByUsername('testuser'),'spiderman');
       //  console.log('User info: ', getUserDataByUserId(1))

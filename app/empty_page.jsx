@@ -4,7 +4,7 @@ const Page = () => {
     const router = useRouter();
 
     const go_to_account = () => {
-        router.push('/settings');
+        router.push('/account-settings');
     };
 
     return(
@@ -18,34 +18,13 @@ const Page = () => {
     )
 
 }
-export default Page;
+
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
-  inner: {
-    flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "center",
-    paddingTop: 100,
-    paddingHorizontal: 20,
-  },
-  input: {
-    width: "80%",
-    height: 50,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 15,
-    fontSize: 16,
-  },
+  inner: { flex: 1, justifyContent: "center", alignItems: "center", padding: 20 },
   button: {
-    width: "80%",
-    height: 50,
-    backgroundColor: "#007BFF",
-    borderRadius: 8,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 10,
+    width: "80%", height: 50, backgroundColor: "#007BFF", borderRadius: 8,
+    justifyContent: "center", alignItems: "center", marginTop: 10,
   },
   buttonText: { color: "#fff", fontSize: 18, fontWeight: "bold" },
 });
+

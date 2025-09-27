@@ -10,6 +10,7 @@ import {
 import { Link } from "expo-router";
 import RowCarousel from "../components/RowCarousel";
 import { useAuth } from "../context/AuthContext";
+import { getTodaysComic, getRandomComic, getComicByNumber, getFavoriteComics, getRecommendedComics, getPopularComics } from "../lib/generalApi";
 
 // DB + User Data Imports
 import {
@@ -25,10 +26,20 @@ import {
   getUserDataWithoutTimestamp,
   removeDuplicateUserData,
 } from "../lib/UserComic";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { StackActions,NavigationContainerRefContext, NavigationContainer } from "@react-navigation/native";
+
+const listLength = 10;
+
 
 export default function Home() {
   const { user } = useAuth();
   const [dbReady, setDbReady] = useState(false);
+  
+  const [recommendedComics, setRecommendedComics] = useState([]);
+  const [popularComics, setPopularComics] = useState([]);
+  const [favoriteComics, setFavoriteComics] = useState([]);
+  const [ComicOfTheDay, setComicOfTheDay] = useState(null);
 
   useEffect(() => {
     const setup = async () => {
@@ -70,31 +81,85 @@ export default function Home() {
         const user2Data = await getUserDataByUserId(2);
         console.log("🔍 Info for user_id 1:", user1Data.map((r) => r.info));
         console.log("🔍 Info for user_id 2:", user2Data.map((r) => r.info));
+
+        // Fetch comics
+        await fetchComics();
+
       } catch (err) {
         console.log("❌ Setup error:", err.message);
       }
     };
+    
+    
+    const fetchComics = async () => {
+      const todaysComic = await getTodaysComic();
+      setComicOfTheDay(todaysComic);
+      const popular = await getPopularComics();
+      setPopularComics(popular);
+      if(user){
+        const favorites = await getFavoriteComics(user.id);
+        setFavoriteComics(favorites);
+        const recommended = await getRecommendedComics(user.id);
+        setRecommendedComics(recommended);
+      } else {
+        setFavoriteComics([]);
+        for (let i = 0; i < listLength; i++) {
+          const randomComic = await getRandomComic();
+          setRecommendedComics((prev) => [...prev, randomComic]);
+        }
+      }
+    };
 
+    
     setup();
   }, []);
 
+  //placeholder information
   // Carousel data
-  const make = (n, label) =>
-    Array.from({ length: n }, (_, i) => ({
-      id: `${label}-${i}`,
-      title: `${label} #${i + 1}`,
-      img: "https://via.placeholder.com/120x170.png?text=Comic",
-    }));
+  // const make = (n, label) =>
+  //   Array.from({ length: n }, (_, i) => ({
+  //     id: `${label}-${i}`,
+  //     title: `${label} #${i + 1}`,
+  //     img: "https://via.placeholder.com/120x170.png?text=Comic",
+  //   }));
 
-  const recommended = useMemo(() => make(8, "Recommended"), []);
-  const popular = useMemo(() => make(8, "Popular"), []);
-  const favorites = useMemo(() => make(6, "Favorite"), []);
+  const make = (n, label) => {
+    return Array.from({ length: n }, (_, i) => {
+      let comic;
+      if (label === "Recommended" && recommendedComics && recommendedComics[i]) {
+        comic = recommendedComics[i];
+      } else if (label === "Popular" && popularComics && popularComics[i]) {
+        comic = popularComics[i];
+      } else if (label === "Favorite" && favoriteComics && favoriteComics[i]) {
+        comic = favoriteComics[i];
+      }
+      return {
+        id: comic ? `${label}-${comic.num}` : `${label}-placeholder-${i}`,
+        title: comic ? comic.title : `${label} #${i + 1}`,
+        img: comic ? comic.img : "https://via.placeholder.com/120x170.png?text=Comic",
+      };
+    });
+  };
+
+    
+  var popular = useMemo(() => popularComics || make(listLength, "Popular"), [popularComics]);
+  var recommended = useMemo(() => recommendedComics || make(listLength, "Recommended"), [recommendedComics]);
+  if(user){
+    var favorites = useMemo(() => favoriteComics || make(favoriteComics.length, "Favorite"), [favoriteComics]);
+  } else {
+    var favorites = [];
+  }
+
+    //placeholder images
+  // const recommended = useMemo(() => make(8, "Recommended"), []);
+  // const popular = useMemo(() => make(8, "Popular"), []);
+  // const favorites = useMemo(() => make(6, "Favorite"), []);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 24 }}>
       <View style={styles.bannerWrap}>
         <Image
-          source={require("../assets/ComicOfTheDay.png")}
+          source={{ uri: ComicOfTheDay ? ComicOfTheDay.img : "https://via.placeholder.com/600x200.png?text=Comic+of+the+Day" }}
           style={styles.banner}
           resizeMode="cover"
         />
@@ -104,7 +169,21 @@ export default function Home() {
       <RowCarousel title="Popular" items={popular} />
 
       {user ? (
-        <RowCarousel title="Favorites" items={favorites} />
+        favoriteComics.length > 0 ? (
+          <RowCarousel title="Favorites" items={favorites} />
+        ) : (
+          <View style={styles.cta}>
+            <Text style={styles.ctaTitle}>Favorites</Text>
+            <View style={styles.ctaCard}>
+              <Text style={styles.ctaText}>You haven't added any favorites yet. Start exploring and add some!</Text>
+              <Link href="/search" asChild>
+                <Pressable style={styles.ctaButton}>
+                  <Text style={styles.ctaButtonText}>Browse Comics</Text>
+                </Pressable>
+              </Link>
+            </View>
+          </View>
+        ) 
       ) : (
         <View style={styles.cta}>
           <Text style={styles.ctaTitle}>Favorites</Text>

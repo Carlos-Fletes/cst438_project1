@@ -7,7 +7,7 @@ import {
   Text,
   Pressable,
 } from "react-native";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import RowCarousel from "../components/RowCarousel";
 import { useAuth } from "../context/AuthContext";
 import { getTodaysComic, getRandomComic, getComicByNumber, getFavoriteComics, getRecommendedComics, getPopularComics,getRandomComics } from "../lib/generalApi";
@@ -32,12 +32,22 @@ const listLength = 10;
 
 export default function Home() {
   const { user } = useAuth();
+  const router = useRouter();
   const [dbReady, setDbReady] = useState(false);
   
   const [recommendedComics, setRecommendedComics] = useState([]);
   const [popularComics, setPopularComics] = useState([]);
   const [favoriteComics, setFavoriteComics] = useState([]);
   const [ComicOfTheDay, setComicOfTheDay] = useState(null);
+
+  // Navigation function for carousel items
+  const handleComicPress = (comic) => {
+    console.log('📍 Navigating to comic:', comic.num);
+    router.push({
+      pathname: '/comicDetails',
+      params: { comicNum: comic.num }
+    });
+  };
 
   useEffect(() => {
     const fetchComics = async () => {
@@ -133,16 +143,44 @@ export default function Home() {
         title: comic ? comic.title : `${label} #${i + 1}`,
         img: comic ? comic.img : "https://via.placeholder.com/120x170.png?text=Comic",
         key: comic ? `${label}-${comic.num}` : `${label}-placeholder-${i}`,
+        num: comic ? comic.num : i + 1, // Include the comic number for navigation
       };
     });
   };
 
     
-  const popular = useMemo(() => popularComics || make(listLength, "Popular"), [popularComics]);
-  const recommended = useMemo(() => recommendedComics || make(listLength, "Recommended"), [recommendedComics]);
+  const popular = useMemo(() => {
+    if (popularComics && popularComics.length > 0) {
+      return popularComics.map(comic => ({ 
+        ...comic, 
+        id: `popular-${comic.num}`,
+        key: `popular-${comic.num}`
+      }));
+    }
+    return make(listLength, "Popular");
+  }, [popularComics]);
+  
+  const recommended = useMemo(() => {
+    if (recommendedComics && recommendedComics.length > 0) {
+      return recommendedComics.map(comic => ({ 
+        ...comic, 
+        id: `recommended-${comic.num}`,
+        key: `recommended-${comic.num}`
+      }));
+    }
+    return make(listLength, "Recommended");
+  }, [recommendedComics]);
+  
   const favorites = useMemo(() => {
     if (user) {
-      return favoriteComics || make(favoriteComics.length, "Favorite");
+      if (favoriteComics && favoriteComics.length > 0) {
+        return favoriteComics.map(comic => ({ 
+          ...comic, 
+          id: `favorite-${comic.num}`,
+          key: `favorite-${comic.num}`
+        }));
+      }
+      return make(favoriteComics.length, "Favorite");
     }
     return [];
   }, [favoriteComics, user]);
@@ -154,7 +192,7 @@ export default function Home() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 24 }}>
-      <View style={styles.bannerWrap} key="banner-wrap">
+      <View style={styles.bannerWrap}>
         <Image
           source={{ uri: ComicOfTheDay ? ComicOfTheDay.img : "https://via.placeholder.com/600x200.png?text=Comic+of+the+Day" }}
           style={styles.banner}
@@ -162,37 +200,49 @@ export default function Home() {
         />
       </View>
 
-      <RowCarousel title="Recommended" items={recommended} key="carousel-recommended" />
-      <RowCarousel title="Popular" items={popular} key="carousel-popular" />
+      <RowCarousel 
+        title="Recommended" 
+        items={recommended} 
+        onItemPress={handleComicPress}
+      />
+      <RowCarousel 
+        title="Popular" 
+        items={popular} 
+        onItemPress={handleComicPress}
+      />
 
       {user ? (
         favoriteComics.length > 0 ? (
-          <RowCarousel title="Favorites" items={favorites} key="carousel-favorites" />
+          <RowCarousel 
+            title="Favorites" 
+            items={favorites} 
+            onItemPress={handleComicPress}
+          />
         ) : (
-          <View style={styles.cta} key="cta-favorites-empty">
-            <Text style={styles.ctaTitle} key="cta-title-favorites-empty">Favorites</Text>
-            <View style={styles.ctaCard} key="cta-card-favorites-empty">
-              <Text style={styles.ctaText} key="cta-text-favorites-empty">
+          <View style={styles.cta}>
+            <Text style={styles.ctaTitle}>Favorites</Text>
+            <View style={styles.ctaCard}>
+              <Text style={styles.ctaText}>
                 You haven't added any favorites yet. Start exploring and add some!
               </Text>
-              <Link href="/search" asChild key="cta-link-browse-comics">
-                <Pressable style={styles.ctaButton} key="cta-browse-comics">
-                  <Text style={styles.ctaButtonText} key="cta-browse-comics-text">Browse Comics</Text>
+              <Link href="/search" asChild>
+                <Pressable style={styles.ctaButton}>
+                  <Text style={styles.ctaButtonText}>Browse Comics</Text>
                 </Pressable>
               </Link>
             </View>
           </View>
         )
       ) : (
-        <View style={styles.cta} key="cta-favorites-signin">
-          <Text style={styles.ctaTitle} key="cta-title-favorites-signin">Favorites</Text>
-          <View style={styles.ctaCard} key="cta-card-favorites-signin">
-            <Text style={styles.ctaText} key="cta-text-favorites-signin">
+        <View style={styles.cta}>
+          <Text style={styles.ctaTitle}>Favorites</Text>
+          <View style={styles.ctaCard}>
+            <Text style={styles.ctaText}>
               Sign in to see your favorites here.
             </Text>
-            <Link href="/signIn" asChild key="cta-link-signin">
-              <Pressable style={styles.ctaButton} key="cta-signin">
-                <Text style={styles.ctaButtonText} key="cta-signin-text">Sign In</Text>
+            <Link href="/signIn" asChild>
+              <Pressable style={styles.ctaButton}>
+                <Text style={styles.ctaButtonText}>Sign In</Text>
               </Pressable>
             </Link>
           </View>

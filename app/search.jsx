@@ -101,7 +101,7 @@ export default function Browse() {
               // Pass the query as a param
               navigation.navigate("comicDetails", { comicNum: query.trim() });
             }
-            console.log("Search submitted:", query);
+            //console.log("Search submitted:", query);
           }}
         />
       </View>

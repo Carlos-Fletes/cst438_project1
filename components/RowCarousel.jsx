@@ -1,9 +1,12 @@
 // components/RowCarousel.jsx
 import { View, Text, FlatList, Image, Pressable, StyleSheet } from "react-native";
 
-export default function RowCarousel({ title, items, onSeeAll }) {
+export default function RowCarousel({ title, items, onSeeAll, onItemPress }) {
   const renderItem = ({ item }) => (
-    <Pressable style={styles.card}>
+    <Pressable 
+      style={styles.card}
+      onPress={() => onItemPress && onItemPress(item)}
+    >
       <Image source={{ uri: item.img }} style={styles.cover} />
       <Text style={styles.cardTitle} numberOfLines={1}>{item.title}</Text>
     </Pressable>
@@ -22,7 +25,7 @@ export default function RowCarousel({ title, items, onSeeAll }) {
       <FlatList
         horizontal
         data={items}
-        keyExtractor={(it) => it.id}
+        keyExtractor={(item, index) => item.key || item.id || `item-${index}`}
         renderItem={renderItem}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingRight: 12 }}

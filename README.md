@@ -1,18 +1,18 @@
-This project is a comic scroller that allows sign in and favorting comics to users
+This project is a comic scroller that allows signing in and favorite comics
 The API we used is called xkcd and is found [here](https://github.com/public-apis/public-apis?tab=readme-ov-file#games--comics).
 
 ## Introduction
-The communication of the project was handled through discord 
+The communication of the project was handled through Discord 
 We started with 26 Issues 
-At the deadline of the project we completed 13 issues
+At the deadline of the project, we completed 13 issues
 ## Team Retrospective
 Carlos Fletes
 Pull requests [PR lists](https://github.com/Carlos-Fletes/cst438_project1/pulls?q=is%3Apr+is%3Aclosed+author%3ACarlos-Fletes).
 
-Issues completes [Issue list](https://github.com/Carlos-Fletes/cst438_project1/issues?q=is%3Aissue%20state%3Aclosed%20sort%3Acreated-asc%20assignee%3ACarlos-Fletes).
+Issues completed [Issue list](https://github.com/Carlos-Fletes/cst438_project1/issues?q=is%3Aissue%20state%3Aclosed%20sort%3Acreated-asc%20assignee%3ACarlos-Fletes).
 
 #### What was your role / which stories did you work on
-My role was getting the base project ready, setting up the login, setting up database for users and user info.
+My role was getting the base project ready, setting up the login, setting up the database for users, and user info.
 + What was the biggest challenge? 
   + The biggest challenge was getting both databases to work together and have the userId be sent to the comic database to save the user data.
 +Why was it a challenge?
@@ -27,3 +27,4 @@ My role was getting the base project ready, setting up the login, setting up dat
   + The most valuable thing I learned here was how important it is to have a plan and schedule to get things done.
 
 ## Conclusion
+

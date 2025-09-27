@@ -154,7 +154,7 @@ export default function Home() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 24 }}>
-      <View style={styles.bannerWrap}>
+      <View style={styles.bannerWrap} key="banner-wrap">
         <Image
           source={{ uri: ComicOfTheDay ? ComicOfTheDay.img : "https://via.placeholder.com/600x200.png?text=Comic+of+the+Day" }}
           style={styles.banner}
@@ -162,14 +162,14 @@ export default function Home() {
         />
       </View>
 
-      <RowCarousel title="Recommended" items={recommended} />
-      <RowCarousel title="Popular" items={popular} />
+      <RowCarousel title="Recommended" items={recommended} key="recommended" />
+      <RowCarousel title="Popular" items={popular} key="popular" />
 
       {user ? (
         favoriteComics.length > 0 ? (
-          <RowCarousel title="Favorites" items={favorites} />
+          <RowCarousel title="Favorites" items={favorites} key="favorites" />
         ) : (
-          <View style={styles.cta}>
+          <View style={styles.cta} key="favorites-cta">
             <Text style={styles.ctaTitle}>Favorites</Text>
             <View style={styles.ctaCard}>
               <Text style={styles.ctaText}>You haven't added any favorites yet. Start exploring and add some!</Text>
@@ -182,7 +182,7 @@ export default function Home() {
           </View>
         ) 
       ) : (
-        <View style={styles.cta}>
+        <View style={styles.cta} key="favorites-cta">
           <Text style={styles.ctaTitle}>Favorites</Text>
           <View style={styles.ctaCard}>
             <Text style={styles.ctaText}>Sign in to see your favorites here.</Text>

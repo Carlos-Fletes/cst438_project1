@@ -10,7 +10,7 @@ import {
 import { Link } from "expo-router";
 import RowCarousel from "../components/RowCarousel";
 import { useAuth } from "../context/AuthContext";
-import { getTodaysComic, getRandomComic, getComicByNumber, getFavoriteComics, getRecommendedComics, getPopularComics } from "../lib/generalApi";
+import { getTodaysComic, getRandomComic, getComicByNumber, getFavoriteComics, getRecommendedComics, getPopularComics,getRandomComics } from "../lib/generalApi";
 
 // DB + User Data Imports
 import {
@@ -45,17 +45,15 @@ export default function Home() {
       setComicOfTheDay(todaysComic);
       const popular = await getPopularComics();
       setPopularComics(popular);
-      if(user){
-        const favorites = await getFavoriteComics(user.id);
-        setFavoriteComics(favorites);
+      if (user && user.id) {
         const recommended = await getRecommendedComics(user.id);
         setRecommendedComics(recommended);
+        const favorites = await getFavoriteComics(user.id);
+        setFavoriteComics(favorites);
       } else {
+        const randomComics = await getRandomComics(listLength);
+        setRecommendedComics(randomComics);
         setFavoriteComics([]);
-        for (let i = 0; i < listLength; i++) {
-          const randomComic = await getRandomComic();
-          setRecommendedComics((prev) => [...prev, randomComic]);
-        }
       }
     };
     
@@ -139,13 +137,14 @@ export default function Home() {
   };
 
     
-  var popular = useMemo(() => popularComics || make(listLength, "Popular"), [popularComics]);
-  var recommended = useMemo(() => recommendedComics || make(listLength, "Recommended"), [recommendedComics]);
-  if(user){
-    var favorites = useMemo(() => favoriteComics || make(favoriteComics.length, "Favorite"), [favoriteComics]);
-  } else {
-    var favorites = [];
-  }
+  const popular = useMemo(() => popularComics || make(listLength, "Popular"), [popularComics]);
+  const recommended = useMemo(() => recommendedComics || make(listLength, "Recommended"), [recommendedComics]);
+  const favorites = useMemo(() => {
+    if (user) {
+      return favoriteComics || make(favoriteComics.length, "Favorite");
+    }
+    return [];
+  }, [favoriteComics, user]);
 
     //placeholder images
   // const recommended = useMemo(() => make(8, "Recommended"), []);
@@ -162,19 +161,19 @@ export default function Home() {
         />
       </View>
 
-      <RowCarousel title="Recommended" items={recommended} key="recommended" />
-      <RowCarousel title="Popular" items={popular} key="popular" />
+      <RowCarousel title="Recommended" items={recommended} key="carousel-recommended" />
+      <RowCarousel title="Popular" items={popular} key="carousel-popular" />
 
       {user ? (
         favoriteComics.length > 0 ? (
-          <RowCarousel title="Favorites" items={favorites} key="favorites" />
+          <RowCarousel title="Favorites" items={favorites} key="carousel-favorites" />
         ) : (
-          <View style={styles.cta} key="favorites-cta">
+          <View style={styles.cta} key="cta-favorites-empty">
             <Text style={styles.ctaTitle}>Favorites</Text>
             <View style={styles.ctaCard}>
               <Text style={styles.ctaText}>You haven't added any favorites yet. Start exploring and add some!</Text>
               <Link href="/search" asChild>
-                <Pressable style={styles.ctaButton}>
+                <Pressable style={styles.ctaButton} key="cta-browse-comics">
                   <Text style={styles.ctaButtonText}>Browse Comics</Text>
                 </Pressable>
               </Link>
@@ -182,12 +181,12 @@ export default function Home() {
           </View>
         ) 
       ) : (
-        <View style={styles.cta} key="favorites-cta">
+        <View style={styles.cta} key="cta-favorites-signin">
           <Text style={styles.ctaTitle}>Favorites</Text>
           <View style={styles.ctaCard}>
             <Text style={styles.ctaText}>Sign in to see your favorites here.</Text>
             <Link href="/signIn" asChild>
-              <Pressable style={styles.ctaButton}>
+              <Pressable style={styles.ctaButton} key="cta-signin">
                 <Text style={styles.ctaButtonText}>Sign In</Text>
               </Pressable>
             </Link>

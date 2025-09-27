@@ -132,6 +132,7 @@ export default function Home() {
         id: comic ? `${label}-${comic.num}` : `${label}-placeholder-${i}`,
         title: comic ? comic.title : `${label} #${i + 1}`,
         img: comic ? comic.img : "https://via.placeholder.com/120x170.png?text=Comic",
+        key: comic ? `${label}-${comic.num}` : `${label}-placeholder-${i}`,
       };
     });
   };
@@ -169,25 +170,29 @@ export default function Home() {
           <RowCarousel title="Favorites" items={favorites} key="carousel-favorites" />
         ) : (
           <View style={styles.cta} key="cta-favorites-empty">
-            <Text style={styles.ctaTitle}>Favorites</Text>
-            <View style={styles.ctaCard}>
-              <Text style={styles.ctaText}>You haven't added any favorites yet. Start exploring and add some!</Text>
-              <Link href="/search" asChild>
+            <Text style={styles.ctaTitle} key="cta-title-favorites-empty">Favorites</Text>
+            <View style={styles.ctaCard} key="cta-card-favorites-empty">
+              <Text style={styles.ctaText} key="cta-text-favorites-empty">
+                You haven't added any favorites yet. Start exploring and add some!
+              </Text>
+              <Link href="/search" asChild key="cta-link-browse-comics">
                 <Pressable style={styles.ctaButton} key="cta-browse-comics">
-                  <Text style={styles.ctaButtonText}>Browse Comics</Text>
+                  <Text style={styles.ctaButtonText} key="cta-browse-comics-text">Browse Comics</Text>
                 </Pressable>
               </Link>
             </View>
           </View>
-        ) 
+        )
       ) : (
         <View style={styles.cta} key="cta-favorites-signin">
-          <Text style={styles.ctaTitle}>Favorites</Text>
-          <View style={styles.ctaCard}>
-            <Text style={styles.ctaText}>Sign in to see your favorites here.</Text>
-            <Link href="/signIn" asChild>
+          <Text style={styles.ctaTitle} key="cta-title-favorites-signin">Favorites</Text>
+          <View style={styles.ctaCard} key="cta-card-favorites-signin">
+            <Text style={styles.ctaText} key="cta-text-favorites-signin">
+              Sign in to see your favorites here.
+            </Text>
+            <Link href="/signIn" asChild key="cta-link-signin">
               <Pressable style={styles.ctaButton} key="cta-signin">
-                <Text style={styles.ctaButtonText}>Sign In</Text>
+                <Text style={styles.ctaButtonText} key="cta-signin-text">Sign In</Text>
               </Pressable>
             </Link>
           </View>

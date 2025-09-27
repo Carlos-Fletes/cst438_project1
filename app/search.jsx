@@ -15,6 +15,8 @@ import {
 import { useEffect } from "react";
 import { init_DB } from "../lib/UserComic";
 
+import { useNavigation } from "@react-navigation/native";
+
 
 
 
@@ -24,6 +26,8 @@ export default function Browse() {
   const [popularComics, setPopularComics] = useState(null);
   const [recommendedComics, setRecommendedComics] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const navigation = useNavigation();
 
 
   const listLength = 10;
@@ -89,6 +93,16 @@ export default function Browse() {
           onChangeText={setQuery}
           returnKeyType="search"
           autoCapitalize="none"
+          onSubmitEditing={() => {
+            // Handle search submission (e.g., navigate to search results)
+            if (query.trim()) {
+              // Assuming you use React Navigation
+              // and comicDetails.jsx is registered as "comicDetails" route
+              // Pass the query as a param
+              navigation.navigate("comicDetails", { comicNum: query.trim() });
+            }
+            console.log("Search submitted:", query);
+          }}
         />
       </View>
       <RowCarousel title="Recommended" items={recommended} key="recommended" />

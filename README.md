@@ -28,3 +28,27 @@ My role was getting the base project ready, setting up the login, setting up the
 
 ## Conclusion
 
+Lester Dominguez
+Pull requests [https://github.com/Carlos-Fletes/cst438_project1/issues?q=is%3Apr%20author%3ALestDomzEDU%20state%3Aclosed](url)
+
+Issues completed: [https://github.com/Carlos-Fletes/cst438_project1/issues?q=is%3Aissue%20state%3Aclosed%20assignee%3ALestDomzEDU
+](url)
+
+#### What was your role / which stories did you work on
+  + My role was working on the front end and getting the project to look good while maintaining its core features.
++ What was the biggest challenge? 
+  + My laptop has not been booting my emulator recently and it's been my biggest challenge to understand how to work this project and get the program and laptop to work.
++Why was it a challenge?
+  + It was very challenging to change the program without seeing my changes in real time.
++ How was the challenge addressed?
+  + I worked with the TA, Roberto, to sort the issue, but it was tiresome and complicated. I made several file changes, deleted and reinstalled Android Studio, and still, no progress was made. So instead of wasting time, I bought a new laptop and plan to be better prepared with better hardware for this class.
++ Favorite / most interesting part of this project
+  + I loved making front-end changes and seeing how the result worked. My favorite part was making the home page, as it dealt with a lot of unfamiliar grounds for me, but making all the changes I did made me feel better about this app.
++ If you could do it over, what would you change?
+  + I would choose to understand the changes made by my teammates and understand the code they need help with so we can overcome these problems faster and more efficiently. 
++ What is the most valuable thing you learned?
+  + I learned the process of teamwork; it was great to finally understand GitHub and work with a team that could pull its own weight.
+
+## Conclusion
+This project was a rough road, but as seen by the changes and commits from each member here, it all worked out fine. I liked the progress we made, but it did feel sloppy, and I felt as though our project lacked in certain areas. I also believe that I could do more and learn more from this project. I want to be more involved next time. I also want to better communicate, as I felt like there was sometimes a lack of communication and direction. Overall, I believed that as the first project, everyone did what they could, but I strive to achieve more next time and learn more backend next time around.
+

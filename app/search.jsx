@@ -12,7 +12,8 @@ import {
   getComicByNumber,
 } from "../lib/generalApi";
 
-import { useEffect } from "react/cjs/react.development";
+import { useEffect } from "react";
+import { init_DB } from "../lib/UserComic";
 
 
 
@@ -29,17 +30,27 @@ export default function Browse() {
 
   const setup = async () => {
     setLoading(true);
+    await init_DB();
+    // Fetch popular comics
     const popular = await getPopularComics();
     setPopularComics(popular);
-    if (user) {
-      const [recommended] = await Promise.all([
-        getRecommendedComics(user.id),
-      ]);
-      setRecommendedComics(recommended);
-    } else {
-      const randomComics = await getRandomComics(listLength);
-      setRecommendedComics(randomComics);
+
+    // Fetch recommended comics based on user status
+    try {
+      if (user && user.id) {
+        // If user is logged in, fetch personalized recommendations
+        const recommended = await getRecommendedComics(user.id);
+        setRecommendedComics(recommended);
+      } else {
+        // If no user, fetch random comics
+        const randomComics = await getRandomComics(listLength);
+        setRecommendedComics(randomComics);
+      }
+    } catch (error) {
+      console.error("Error fetching recommended comics:", error);
+      setRecommendedComics([]);
     }
+
     setLoading(false);
   };
 
@@ -48,12 +59,14 @@ export default function Browse() {
   }, []);
 
   const makeItems = (n, label) => {
+    const recommendedArr = recommendedComics || [];
+    const popularArr = popularComics || [];
     return Array.from({ length: n }, (_, i) => {
       let comic;
-      if (label === "Recommended" && recommendedComics && recommendedComics[i]) {
-        comic = recommendedComics[i];
-      } else if (label === "Popular" && popularComics && popularComics[i]) {
-        comic = popularComics[i];
+      if (label === "Recommended" && recommendedArr[i]) {
+        comic = recommendedArr[i];
+      } else if (label === "Popular" && popularArr[i]) {
+        comic = popularArr[i];
       }
       return {
         id: comic ? `${label}-${comic.num}` : `${label}-placeholder-${i}`,

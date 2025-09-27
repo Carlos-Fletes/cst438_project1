@@ -1,9 +1,11 @@
 module.exports = function(api) {
   api.cache(true);
   return {
-    presets: [
-      'babel-preset-expo', // for Expo projects
-      '@babel/preset-env', // transpile ES6+ for Node/Jest
+    presets: ['babel-preset-expo'],
+    plugins: [
+      ["@babel/plugin-transform-private-methods", { "loose": true }],
+      ["@babel/plugin-transform-private-property-in-object", { "loose": true }],
+      ["@babel/plugin-transform-class-properties", { "loose": true }]
     ],
   };
 };

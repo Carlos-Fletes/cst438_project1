@@ -26,8 +26,6 @@ import {
   getUserDataWithoutTimestamp,
   removeDuplicateUserData,
 } from "../lib/UserComic";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
-import { StackActions,NavigationContainerRefContext, NavigationContainer } from "@react-navigation/native";
 
 const listLength = 10;
 
@@ -42,6 +40,25 @@ export default function Home() {
   const [ComicOfTheDay, setComicOfTheDay] = useState(null);
 
   useEffect(() => {
+    const fetchComics = async () => {
+      const todaysComic = await getTodaysComic();
+      setComicOfTheDay(todaysComic);
+      const popular = await getPopularComics();
+      setPopularComics(popular);
+      if(user){
+        const favorites = await getFavoriteComics(user.id);
+        setFavoriteComics(favorites);
+        const recommended = await getRecommendedComics(user.id);
+        setRecommendedComics(recommended);
+      } else {
+        setFavoriteComics([]);
+        for (let i = 0; i < listLength; i++) {
+          const randomComic = await getRandomComic();
+          setRecommendedComics((prev) => [...prev, randomComic]);
+        }
+      }
+    };
+    
     const setup = async () => {
       try {
         // Initialize both databases
@@ -87,26 +104,6 @@ export default function Home() {
 
       } catch (err) {
         console.log("❌ Setup error:", err.message);
-      }
-    };
-    
-    
-    const fetchComics = async () => {
-      const todaysComic = await getTodaysComic();
-      setComicOfTheDay(todaysComic);
-      const popular = await getPopularComics();
-      setPopularComics(popular);
-      if(user){
-        const favorites = await getFavoriteComics(user.id);
-        setFavoriteComics(favorites);
-        const recommended = await getRecommendedComics(user.id);
-        setRecommendedComics(recommended);
-      } else {
-        setFavoriteComics([]);
-        for (let i = 0; i < listLength; i++) {
-          const randomComic = await getRandomComic();
-          setRecommendedComics((prev) => [...prev, randomComic]);
-        }
       }
     };
 

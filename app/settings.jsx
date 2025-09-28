@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, TextInput, Alert } from "react-native";
+import { StyleSheet, Text, View, Pressable, TextInput, Alert, Platform} from "react-native";
 import {Link, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -13,10 +13,16 @@ const Account = () => {
     const [username, setUsername] = useState("");
 
     const settings_About = () => {
-        router.push('/empty_page');
+        router.push('/about');
     };
-    const settings_Notifications = () => {
-        router.push('/empty_page');
+    const settings_Favorites = () => {
+        router.push('/favorites');
+    };
+    const settings_SignOut = () => {
+      router.push('/contact');
+    };
+    const settings_Contact = () => {
+        router.push('/contact');
     };
     const settings_Account = () => {
         router.push('/account-settings');
@@ -35,14 +41,20 @@ const Account = () => {
       </Text>
 
       <View style={styles.inner}>
+        <Pressable style={styles.buttonSecondary} onPress={settings_Favorites}>
+          <Text style={styles.buttonSecondaryText}>Favorites</Text>
+        </Pressable>
         <Pressable style={styles.buttonPrimary} onPress={settings_Account}>
           <Text style={styles.buttonPrimaryText}>Account</Text>
         </Pressable>
-        <Pressable style={styles.buttonPrimary} onPress={settings_Notifications}>
-          <Text style={styles.buttonPrimaryText}>Notifications</Text>
+        <Pressable style={styles.buttonSecondary} onPress={settings_Contact}>
+          <Text style={styles.buttonSecondaryText}>Contact Us</Text>
         </Pressable>
-        <Pressable style={styles.buttonSecondary} onPress={settings_About}>
-          <Text style={styles.buttonSecondaryText}>About</Text>
+        <Pressable style={styles.buttonPrimary} onPress={settings_About}>
+          <Text style={styles.buttonPrimaryText}>About</Text>
+        </Pressable>
+        <Pressable style={styles.buttonTertiary} onPress={settings_SignOut}>
+          <Text style={styles.buttonTertiaryText}>Sign Out</Text>
         </Pressable>
       </View>
     </View>
@@ -53,7 +65,7 @@ export default Account;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0b0b0b",
+    backgroundColor: "#596a88ff",
     paddingHorizontal: 24,
     paddingTop: 48,
   },
@@ -98,10 +110,25 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#3a3a3a",
-    marginTop: 4,
+    borderColor: "#ffffff",
+    marginBottom: 12,
   },
   buttonSecondaryText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  buttonTertiary: {
+    height: 56,
+    backgroundColor: "transparent",
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ffffff",
+    marginTop: 4,
+  },
+  buttonTertiaryText: {
     color: "#ffffff",
     fontSize: 16,
     fontWeight: "600",

@@ -124,27 +124,31 @@ const Account = () => {
 
   return (
     <View style={styles.container}>
-      <Text>Account Page</Text>
-      <Text>Current username: {username || "(not signed in)"}</Text>
+      <Text style={styles.title}>Account</Text>
+      <Text style={styles.subtitle}>
+        Current username: <Text style={styles.mono}>{username || "(not signed in)"}</Text>
+      </Text>
 
       <View style={styles.inner}>
         {/* Change Username */}
         <TextInput
           style={styles.input}
           placeholder="New Username"
+          placeholderTextColor="#9e9e9e"
           value={newUsername}
           onChangeText={setNewUsername}
           autoCapitalize="none"
           autoCorrect={false}
         />
-        <Pressable style={styles.button} onPress={change_Username}>
-          <Text style={styles.buttonText}>Change Username</Text>
+        <Pressable style={styles.buttonPrimary} onPress={change_Username}>
+          <Text style={styles.buttonPrimaryText}>Change Username</Text>
         </Pressable>
 
         {/* Change Password */}
         <TextInput
           style={styles.input}
           placeholder="Old Password"
+          placeholderTextColor="#9e9e9e"
           secureTextEntry
           value={oldPassword}
           onChangeText={setOldPassword}
@@ -152,6 +156,7 @@ const Account = () => {
         <TextInput
           style={styles.input}
           placeholder="New Password"
+          placeholderTextColor="#9e9e9e"
           secureTextEntry
           value={newPassword}
           onChangeText={setNewPassword}
@@ -159,16 +164,17 @@ const Account = () => {
         <TextInput
           style={styles.input}
           placeholder="Repeat New Password"
+          placeholderTextColor="#9e9e9e"
           secureTextEntry
           value={repeatNewPassword}
           onChangeText={setRepeatNewPassword}
         />
-        <Pressable style={styles.button} onPress={change_Password}>
-          <Text style={styles.buttonText}>Change Pjassword</Text>
+        <Pressable style={styles.buttonPrimary} onPress={change_Password}>
+          <Text style={styles.buttonPrimaryText}>Change Password</Text>
         </Pressable>
 
-        <Pressable style={styles.button} onPress={go_back}>
-          <Text style={styles.buttonText}>Go Back</Text>
+        <Pressable style={styles.buttonSecondary} onPress={go_back}>
+          <Text style={styles.buttonSecondaryText}>Go Back</Text>
         </Pressable>
       </View>
     </View>
@@ -178,34 +184,73 @@ const Account = () => {
 export default Account;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
+  container: {
+    flex: 1,
+    backgroundColor: "#0b0b0b",
+    paddingHorizontal: 24,
+    paddingTop: 48,
+  },
+  title: {
+    color: "#ffffff",
+    fontSize: 28,
+    fontWeight: "700",
+    marginBottom: 8,
+  },
+  subtitle: {
+    color: "#d4d4d4",
+    fontSize: 14,
+    marginBottom: 16,
+  },
+  mono: {
+    fontFamily: "Menlo",
+  },
   inner: {
     flex: 1,
-    justifyContent: "flex-start",
     alignItems: "center",
-    paddingTop: 100,
-    paddingHorizontal: 20,
+    gap: 0, // keeps RN compat; spacing handled by margins below
+    paddingTop: 24,
   },
   input: {
-    width: "80%",
-    height: 50,
+    width: "100%",
+    height: 52,
+    backgroundColor: "#131313",
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 15,
+    borderColor: "#2a2a2a",
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    marginBottom: 14,
     fontSize: 16,
+    color: "#f5f5f5",
   },
-  button: {
-    width: "80%",
-    height: 50,
-    backgroundColor: "#007BFF",
-    borderRadius: 8,
+  buttonPrimary: {
+    width: "100%",
+    height: 52,
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 6,
+    marginBottom: 10,
   },
-  buttonText: { color: "#fff", fontSize: 18, fontWeight: "bold" },
+  buttonPrimaryText: {
+    color: "#0b0b0b",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  buttonSecondary: {
+    width: "100%",
+    height: 52,
+    backgroundColor: "transparent",
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#3a3a3a",
+    marginTop: 4,
+  },
+  buttonSecondaryText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
 });
-
-

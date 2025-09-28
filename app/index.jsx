@@ -7,9 +7,10 @@ import {
   Text,
   Pressable,
 } from "react-native";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import RowCarousel from "../components/RowCarousel";
 import { useAuth } from "../context/AuthContext";
+import { getTodaysComic, getRandomComic, getComicByNumber, getFavoriteComics, getRecommendedComics, getPopularComics,getRandomComics } from "../lib/generalApi";
 
 // DB + User Data Imports
 import {
@@ -26,11 +27,46 @@ import {
   removeDuplicateUserData,
 } from "../lib/UserComic";
 
+const listLength = 10;
+
+
 export default function Home() {
   const { user } = useAuth();
+  const router = useRouter();
   const [dbReady, setDbReady] = useState(false);
+  
+  const [recommendedComics, setRecommendedComics] = useState([]);
+  const [popularComics, setPopularComics] = useState([]);
+  const [favoriteComics, setFavoriteComics] = useState([]);
+  const [ComicOfTheDay, setComicOfTheDay] = useState(null);
+
+  // Navigation function for carousel items
+  const handleComicPress = (comic) => {
+    console.log('📍 Navigating to comic:', comic.num);
+    router.push({
+      pathname: '/comicDetails',
+      params: { comicNum: comic.num }
+    });
+  };
 
   useEffect(() => {
+    const fetchComics = async () => {
+      const todaysComic = await getTodaysComic();
+      setComicOfTheDay(todaysComic);
+      const popular = await getPopularComics();
+      setPopularComics(popular);
+      if (user && user.id) {
+        const recommended = await getRecommendedComics(user.id);
+        setRecommendedComics(recommended);
+        const favorites = await getFavoriteComics(user.id);
+        setFavoriteComics(favorites);
+      } else {
+        const randomComics = await getRandomComics(listLength);
+        setRecommendedComics(randomComics);
+        setFavoriteComics([]);
+      }
+    };
+    
     const setup = async () => {
       try {
         // Initialize both databases
@@ -62,46 +98,140 @@ export default function Home() {
         const user2Data = await getUserDataByUserId(2);
         console.log("🔍 Info for user_id 1:", user1Data.map((r) => r.info));
         console.log("🔍 Info for user_id 2:", user2Data.map((r) => r.info));
+
+        // Fetch comics
+        await fetchComics();
+
       } catch (err) {
         console.log("❌ Setup error:", err.message);
       }
     };
 
+    
     setup();
   }, []);
 
+  //placeholder information
   // Carousel data
-  const make = (n, label) =>
-    Array.from({ length: n }, (_, i) => ({
-      id: `${label}-${i}`,
-      title: `${label} #${i + 1}`,
-      img: "https://via.placeholder.com/120x170.png?text=Comic",
-    }));
+  // const make = (n, label) =>
+  //   Array.from({ length: n }, (_, i) => ({
+  //     id: `${label}-${i}`,
+  //     title: `${label} #${i + 1}`,
+  //     img: "https://via.placeholder.com/120x170.png?text=Comic",
+  //   }));
 
-  const recommended = useMemo(() => make(8, "Recommended"), []);
-  const popular = useMemo(() => make(8, "Popular"), []);
-  const favorites = useMemo(() => make(6, "Favorite"), []);
+  const make = (n, label) => {
+    return Array.from({ length: n }, (_, i) => {
+      let comic;
+      if (label === "Recommended" && recommendedComics && recommendedComics[i]) {
+        comic = recommendedComics[i];
+      } else if (label === "Popular" && popularComics && popularComics[i]) {
+        comic = popularComics[i];
+      } else if (label === "Favorite" && favoriteComics && favoriteComics[i]) {
+        comic = favoriteComics[i];
+      }
+      return {
+        id: comic ? `${label}-${comic.num}` : `${label}-placeholder-${i}`,
+        title: comic ? comic.title : `${label} #${i + 1}`,
+        img: comic ? comic.img : "https://via.placeholder.com/120x170.png?text=Comic",
+        key: comic ? `${label}-${comic.num}` : `${label}-placeholder-${i}`,
+        num: comic ? comic.num : i + 1, // Include the comic number for navigation
+      };
+    });
+  };
+
+    
+  const popular = useMemo(() => {
+    if (popularComics && popularComics.length > 0) {
+      return popularComics.map(comic => ({ 
+        ...comic, 
+        id: `popular-${comic.num}`,
+        key: `popular-${comic.num}`
+      }));
+    }
+    return make(listLength, "Popular");
+  }, [popularComics]);
+  
+  const recommended = useMemo(() => {
+    if (recommendedComics && recommendedComics.length > 0) {
+      return recommendedComics.map(comic => ({ 
+        ...comic, 
+        id: `recommended-${comic.num}`,
+        key: `recommended-${comic.num}`
+      }));
+    }
+    return make(listLength, "Recommended");
+  }, [recommendedComics]);
+  
+  const favorites = useMemo(() => {
+    if (user) {
+      if (favoriteComics && favoriteComics.length > 0) {
+        return favoriteComics.map(comic => ({ 
+          ...comic, 
+          id: `favorite-${comic.num}`,
+          key: `favorite-${comic.num}`
+        }));
+      }
+      return make(favoriteComics.length, "Favorite");
+    }
+    return [];
+  }, [favoriteComics, user]);
+
+    //placeholder images
+  // const recommended = useMemo(() => make(8, "Recommended"), []);
+  // const popular = useMemo(() => make(8, "Popular"), []);
+  // const favorites = useMemo(() => make(6, "Favorite"), []);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 24 }}>
       <View style={styles.bannerWrap}>
         <Image
-          source={require("../assets/ComicOfTheDay.png")}
+          source={{ uri: ComicOfTheDay ? ComicOfTheDay.img : "https://via.placeholder.com/600x200.png?text=Comic+of+the+Day" }}
           style={styles.banner}
           resizeMode="cover"
         />
       </View>
 
-      <RowCarousel title="Recommended" items={recommended} />
-      <RowCarousel title="Popular" items={popular} />
+      <RowCarousel 
+        title="Recommended" 
+        items={recommended} 
+        onItemPress={handleComicPress}
+      />
+      <RowCarousel 
+        title="Popular" 
+        items={popular} 
+        onItemPress={handleComicPress}
+      />
 
       {user ? (
-        <RowCarousel title="Favorites" items={favorites} />
+        favoriteComics.length > 0 ? (
+          <RowCarousel 
+            title="Favorites" 
+            items={favorites} 
+            onItemPress={handleComicPress}
+          />
+        ) : (
+          <View style={styles.cta}>
+            <Text style={styles.ctaTitle}>Favorites</Text>
+            <View style={styles.ctaCard}>
+              <Text style={styles.ctaText}>
+                You haven't added any favorites yet. Start exploring and add some!
+              </Text>
+              <Link href="/search" asChild>
+                <Pressable style={styles.ctaButton}>
+                  <Text style={styles.ctaButtonText}>Browse Comics</Text>
+                </Pressable>
+              </Link>
+            </View>
+          </View>
+        )
       ) : (
         <View style={styles.cta}>
           <Text style={styles.ctaTitle}>Favorites</Text>
           <View style={styles.ctaCard}>
-            <Text style={styles.ctaText}>Sign in to see your favorites here.</Text>
+            <Text style={styles.ctaText}>
+              Sign in to see your favorites here.
+            </Text>
             <Link href="/signIn" asChild>
               <Pressable style={styles.ctaButton}>
                 <Text style={styles.ctaButtonText}>Sign In</Text>

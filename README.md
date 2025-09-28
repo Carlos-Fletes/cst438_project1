@@ -56,5 +56,25 @@ Issues completed: [https://github.com/Carlos-Fletes/cst438_project1/issues?q=is%
 ## Conclusion
 This project was a rough road, but as seen by the changes and commits from each member here, it all worked out fine. I liked the progress we made, but it did feel sloppy, and I felt as though our project lacked in certain areas. I also believe that I could do more and learn more from this project. I want to be more involved next time. I also want to better communicate, as I felt like there was sometimes a lack of communication and direction. Overall, I believed that as the first project, everyone did what they could, but I strive to achieve more next time and learn more backend next time around.
 
+### Tyler Pruitt
+Pull Requests: [https://github.com/Carlos-Fletes/cst438_project1/pulls?q=is%3Apr+author%3ASumFerus+is%3Aclosed](url)
 
+Issues Completed: [https://github.com/Carlos-Fletes/cst438_project1/issues?q=is%3Aissue%20state%3Aclosed%20assignee%3ASumFerus](url)
 
+#### What was your role / Which stories did you work on
+  + My role was conneccting the API, creating related functions and connecting them to the front end
++ What was the biggest challenge?
+  + Probably making sure that the images pulled from the API displayed properly on the front end even after a user signs in
++ Why was it a challenge?
+  + It felt like every step up getting the API hooked up was just trying to get a different error until it finally worked
++ How was the challenge addressed?
+  + Google, Claude, and a generous amount of console.log debugging lines
++ Favorite / most interesting part of this project
+  + It wass extremely satisfying to see all of my hard work pay off when the front page finally loaded all of the comic images properly, and generally just every moment of "it finally works!"
++ If you could do it over, what would you change?
+  + I'd probably make sure we had a planned front end layout and database layout way earlier than we did, since it caused a bit of a rush towards the end
++ What is the most valuable thing you learned?
+  + Probably just working with React Native, I've never touched it before, so I kind of think of this as a very intense crash course of sorts
+
+## Conclusion
+I think this project was a lot of fun overall despite the struggles we faced. There were a lot of problems we faced midway through with emulators and such that definitely took a toll with at least half the group unable to do much for several days. I personally think we could have done the initial planning for the project better to smooth things out. I am happy with the results though.

@@ -6,7 +6,8 @@ The communication of the project was handled through Discord
 We started with 26 Issues 
 At the deadline of the project, we completed 13 issues
 ## Team Retrospective
-Carlos Fletes
+### Carlos Fletes
+
 Pull requests [PR lists](https://github.com/Carlos-Fletes/cst438_project1/pulls?q=is%3Apr+is%3Aclosed+author%3ACarlos-Fletes).
 
 Issues completed [Issue list](https://github.com/Carlos-Fletes/cst438_project1/issues?q=is%3Aissue%20state%3Aclosed%20sort%3Acreated-asc%20assignee%3ACarlos-Fletes).
@@ -30,7 +31,8 @@ My role was getting the base project ready, setting up the login, setting up the
 I think the project was successful in the barebones of the project. We got about half of the issues we listed done and got it looking and usable to a reasonable degree. The largest victory was being able to get everybody elses work to work together with minimal errors. In all I think the project turned out well but could've been better and more fleshed out.
 
 
-Lester Dominguez
+
+### Lester Dominguez
 Pull requests [https://github.com/Carlos-Fletes/cst438_project1/issues?q=is%3Apr%20author%3ALestDomzEDU%20state%3Aclosed](url)
 
 Issues completed: [https://github.com/Carlos-Fletes/cst438_project1/issues?q=is%3Aissue%20state%3Aclosed%20assignee%3ALestDomzEDU
@@ -53,5 +55,6 @@ Issues completed: [https://github.com/Carlos-Fletes/cst438_project1/issues?q=is%
 
 ## Conclusion
 This project was a rough road, but as seen by the changes and commits from each member here, it all worked out fine. I liked the progress we made, but it did feel sloppy, and I felt as though our project lacked in certain areas. I also believe that I could do more and learn more from this project. I want to be more involved next time. I also want to better communicate, as I felt like there was sometimes a lack of communication and direction. Overall, I believed that as the first project, everyone did what they could, but I strive to achieve more next time and learn more backend next time around.
+
 
 

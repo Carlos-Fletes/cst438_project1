@@ -1,19 +1,22 @@
-// app/empty_page.jsx
-import { StyleSheet, Text, View, Pressable } from "react-native";
-import { useRouter } from "expo-router";
+import {StyleSheet, Text, View, Pressable, TextInput} from 'react-native';
+import {Link, useRouter} from 'expo-router' 
+const Page = () => {
+    const router = useRouter();
 
-export default function Page() {
-  const router = useRouter();
-  const go_to_account = () => router.push("/account-settings");
+    const go_to_account = () => {
+        router.push('/account-settings');
+    };
 
-  return (
-    <View style={styles.inner}>
-      <Text>Empty Page to add to.</Text>
-      <Pressable style={styles.button} onPress={go_to_account}>
-        <Text style={styles.buttonText}>Go to Account</Text>
-      </Pressable>
-    </View>
-  );
+    return(
+        <View>
+            <Text >Empty Page to add to.</Text>
+            <Pressable style={styles.button} onPress={go_to_account}>
+                <Text style={styles.buttonText}>Go to Account</Text>
+            </Pressable>
+        </View>
+        
+    )
+
 }
 
 const styles = StyleSheet.create({

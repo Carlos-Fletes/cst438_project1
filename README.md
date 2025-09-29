@@ -2,6 +2,7 @@ This project is a comic scroller that allows signing in and favorite comics
 The API we used is called xkcd and is found [here](https://github.com/public-apis/public-apis?tab=readme-ov-file#games--comics).
 
 ## Introduction
+Pull requests [https://github.com/Carlos-Fletes/cst438_project1](url)
 The communication of the project was handled through Discord 
 We started with 26 Issues 
 At the deadline of the project, we completed 13 issues
@@ -78,3 +79,26 @@ Issues Completed: [https://github.com/Carlos-Fletes/cst438_project1/issues?q=is%
 
 ## Conclusion
 I think this project was a lot of fun overall despite the struggles we faced. There were a lot of problems we faced midway through with emulators and such that definitely took a toll with at least half the group unable to do much for several days. I personally think we could have done the initial planning for the project better to smooth things out. I am happy with the results though.
+
+### Keith Ruxton
+Pull Requests: [https://github.com/Carlos-Fletes/cst438_project1/pulls?q=is%3Apr+is%3Aclosed+author%3Akeith-ruxton](url)
+
+Issues Completed: [https://github.com/Carlos-Fletes/cst438_project1/issues?q=is%3Aissue%20state%3Aopen%20assignee%3Akeith-ruxton](url)
+
+#### What was your role / Which stories did you work on
+  + Creating a settings navigation page and allowing the user to alter their account data.
++ What was the biggest challenge?
+  + Getting to actually connect to the database to alter the user without copying it
++ Why was it a challenge?
+  + It was a sort of new process for me dealing with a local database like that and allowing the users to make select changes with breaking     everything
++ How was the challenge addressed?
+  + A lot of console logging all the current users so I could track progress, as well as getting help from my teammates.
++ Favorite / most interesting part of this project
+  + Once the API connection was set helping with the favorites, which was only a small task of mine, was a rewarding task to see fullfilled.
++ If you could do it over, what would you change?
+  + Getting the user database set up earlier since a lot of progress had to be stopped to wait for that component.
++ What is the most valuable thing you learned?
+  + The console and github aspect, I was only partially familiar with the commands and abilites before but I understand them much better now.
+
+## Conclusion
+I faced a lot of trouble during this project getting my emulator and app to run but it did help me get better at trouble shooting and made me look up error codes and things like that. I also struggled a bit with the local database and had to learn a bit more on my own of how to deal with that. Because of this I'm happy with the experience of this project because I think despite the issues we had and that the app still has it was a beneficial and rewarding experience.

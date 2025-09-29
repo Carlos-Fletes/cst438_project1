@@ -74,22 +74,14 @@ export default function Home() {
         await init_DB();
         setDbReady(true);
 
-        // Seed test users
-        await insertUser("testuser", "password123");
-        await insertUser("Admin", "AdminPass");
+        // Insert user if not exists
+        await insertUser('testuser', 'password123');
+        await insertUser('keith', 'test');
+        await insertUser('Admin','AdminPass')
+      //  await insertUserData(FindUserByUsername('testuser'),'spiderman');
+      //  console.log('User info: ', getUserDataByUserId(1))
 
-        // Insert user data
-        const adminUser = await FindUserByUsername("Admin");
-        if (adminUser) {
-          await insertUserData(adminUser.id, 42);
-        }
-
-        const testUser = await FindUserByUsername("testuser");
-        if (testUser) {
-          await insertUserData(testUser.id, 28);
-        }
-
-        // Log all users
+        // Get all users and log them
         const users = await getAllUsers();
         console.log("📋 All Users:");
         users.forEach((u) =>

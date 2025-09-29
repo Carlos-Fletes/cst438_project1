@@ -2,7 +2,7 @@ This project is a comic scroller that allows signing in and favorite comics
 The API we used is called xkcd and is found [here](https://github.com/public-apis/public-apis?tab=readme-ov-file#games--comics).
 
 ## Introduction
-Pull requests [https://github.com/Carlos-Fletes/cst438_project1](url)
+Repo [https://github.com/Carlos-Fletes/cst438_project1](url)
 The communication of the project was handled through Discord 
 We started with 26 Issues 
 At the deadline of the project, we completed 13 issues
